@@ -585,7 +585,11 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {
+          capabilities = {
+            workspaceSymbolProvider = true,
+          },
+        },
         pylsp = {
           settings = {
             pylsp = {
