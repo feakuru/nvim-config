@@ -585,17 +585,12 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        pyright = {
-          capabilities = {
-            workspaceSymbolProvider = true,
-          },
-        },
+        jedi_language_server = {},
         pylsp = {
           settings = {
             pylsp = {
               configurationSources = { 'flake8' },
               plugins = {
-                mypy = { enabled = true },
                 black = { enabled = true },
                 flake8 = { enabled = true },
                 pycodestyle = { enabled = false },
