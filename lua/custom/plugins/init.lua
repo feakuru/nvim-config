@@ -46,6 +46,11 @@ return {
         update_focused_file = {
           enable = true,
         },
+        filters = {
+          custom = {
+            '.*.null-ls_.*',
+          },
+        },
       }
       vim.keymap.set('n', '<leader>tt', ':NvimTreeToggle\n', { desc = '[T]oggle NVim[T]ree' })
     end,
