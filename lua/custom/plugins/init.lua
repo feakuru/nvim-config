@@ -47,6 +47,8 @@ return {
           enable = true,
         },
         filters = {
+          dotfiles = false,
+          git_ignored = false,
           custom = {
             '.*.null-ls_.*',
           },
@@ -197,9 +199,9 @@ return {
       require('breadcrumbs').setup()
     end,
   },
-  {
-    'github/copilot.vim',
-  },
+  -- {
+  --   'github/copilot.vim',
+  -- },
   {
     'nvimdev/dashboard-nvim',
     event = 'VimEnter',
@@ -228,7 +230,8 @@ return {
     end,
     dependencies = { { 'nvim-tree/nvim-web-devicons' } },
   },
-  {
-    'ThePrimeagen/vim-be-good',
-  },
+  'ThePrimeagen/vim-be-good',
+  'tpope/vim-dadbod',
+  'kristijanhusak/vim-dadbod-completion',
+  'kristijanhusak/vim-dadbod-ui',
 }
