@@ -929,11 +929,25 @@ require('lazy').setup({
             ['af'] = '@function.outer',
             ['if'] = '@function.inner',
             ['ac'] = '@class.outer',
-            -- You can optionally set descriptions to the mappings (used in the desc parameter of
-            -- nvim_buf_set_keymap) which plugins like which-key display
-            ['ic'] = { query = '@class.inner', desc = 'Select inner part of a class region' },
-            -- You can also use captures from other query groups like `locals.scm`
-            ['as'] = { query = '@scope', query_group = 'locals', desc = 'Select language scope' },
+            ['ic'] = '@class.inner',
+
+            -- below are the ones defined by me
+            -- before them, the busy letters are: abBcflnpstwW
+
+            -- it is worth noting that these also exist: @assignment.lhs @assignment.rhs
+            ['ae'] = '@assignment.outer',
+            ['ie'] = '@assignment.inner',
+            ['iy'] = '@block.inner',
+            ['ay'] = '@block.outer',
+            ['iz'] = '@call.inner',
+            ['az'] = '@call.outer',
+            ['ii'] = '@conditional.inner',
+            ['ai'] = '@conditional.outer',
+            ['iv'] = '@loop.inner',
+            ['av'] = '@loop.outer',
+            ['ir'] = '@return.inner',
+            ['ar'] = '@return.outer',
+            ['ax'] = '@statement.outer',
           },
           -- You can choose the select mode (default is charwise 'v')
           --
@@ -946,6 +960,7 @@ require('lazy').setup({
             ['@parameter.outer'] = 'v', -- charwise
             ['@function.outer'] = 'V', -- linewise
             ['@class.outer'] = 'V', -- <c-v> for blockwise but i changed it
+            ['@assignment.outer'] = 'v',
           },
           -- If you set this to `true` (default is `false`) then any textobject is
           -- extended to include preceding or succeeding whitespace. Succeeding
