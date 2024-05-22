@@ -290,6 +290,48 @@ require('lazy').setup({
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
       require('which-key').setup()
+      local i = {
+        [' '] = 'Whitespace',
+        ['"'] = 'Balanced "',
+        ["'"] = "Balanced '",
+        ['`'] = 'Balanced `',
+        ['('] = 'Balanced (',
+        [')'] = 'Balanced ) including white-space',
+        ['>'] = 'Balanced > including white-space',
+        ['<lt>'] = 'Balanced <',
+        [']'] = 'Balanced ] including white-space',
+        ['['] = 'Balanced [',
+        ['}'] = 'Balanced } including white-space',
+        ['{'] = 'Balanced {',
+        ['?'] = 'User Prompt',
+        _ = 'Underscore',
+        a = 'Argument',
+        b = 'Balanced ), ], }',
+        c = 'Class',
+        d = 'Digit(s)',
+        e = 'Assignment (R/L)',
+        f = 'Call, function',
+        g = 'Entire file',
+        o = 'Block, conditional, loop',
+        q = 'Quote `, ", \'',
+        r = 'Return',
+      }
+      local a = vim.deepcopy(i)
+      for k, v in pairs(a) do
+        a[k] = v:gsub(' including.*', '')
+      end
+
+      local ic = vim.deepcopy(i)
+      local ac = vim.deepcopy(a)
+      for key, name in pairs { n = 'Next', l = 'Last' } do
+        i[key] = vim.tbl_extend('force', { name = 'Inside ' .. name .. ' textobject' }, ic)
+        a[key] = vim.tbl_extend('force', { name = 'Around ' .. name .. ' textobject' }, ac)
+      end
+      require('which-key').register {
+        mode = { 'o', 'x' },
+        i = i,
+        a = a,
+      }
 
       -- Document existing key chains
       require('which-key').register {
@@ -881,6 +923,7 @@ require('lazy').setup({
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-treesitter/nvim-treesitter-textobjects' },
     config = function()
       -- Better Around/Inside textobjects
       --
@@ -888,7 +931,26 @@ require('lazy').setup({
       --  - va)  - [V]isually select [A]round [)]paren
       --  - yinq - [Y]ank [I]nside [N]ext [']quote
       --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
+      --  PLUS custom treesitter textobjects based on queries from nvim-treesitter-textobjects
+      local spec_treesitter = require('mini.ai').gen_spec.treesitter
+      require('mini.ai').setup {
+        n_lines = 500,
+        custom_textobjects = {
+          a = spec_treesitter { a = '@parameter.outer', i = '@parameter.inner' },
+          c = spec_treesitter { a = '@class.outer', i = '@class.inner' },
+          f = spec_treesitter {
+            a = { '@call.outer', '@function.outer' },
+            i = { '@call.inner', '@function.inner' },
+          },
+          o = spec_treesitter {
+            a = { '@block.outer', '@conditional.outer', '@loop.outer' },
+            i = { '@block.inner', '@conditional.inner', '@loop.inner' },
+          },
+          r = spec_treesitter { a = '@return.outer', i = '@return.inner' },
+          -- Note that usage of lhs/rhs here breaks the a/i logic, but this is more useful i think
+          e = spec_treesitter { a = '@assignment.lhs', i = '@assignment.rhs' },
+        },
+      }
 
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
@@ -918,7 +980,6 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
-    dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects' },
     build = ':TSUpdate',
     opts = {
       ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
@@ -932,96 +993,6 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
-      textobjects = {
-        select = {
-          enable = true,
-
-          -- Automatically jump forward to textobj, similar to targets.vim
-          lookahead = true,
-
-          keymaps = {
-            -- You can use the capture groups defined in textobjects.scm
-            ['aa'] = '@parameter.outer',
-            ['ia'] = '@parameter.inner',
-            ['af'] = '@function.outer',
-            ['if'] = '@function.inner',
-            ['ac'] = '@class.outer',
-            ['ic'] = '@class.inner',
-
-            -- below are the ones defined by me
-            -- before them, the busy letters are: abBcflnpstwW
-
-            -- it is worth noting that these also exist: @assignment.lhs @assignment.rhs
-            ['ae'] = '@assignment.outer',
-            ['ie'] = '@assignment.inner',
-            ['iy'] = '@block.inner',
-            ['ay'] = '@block.outer',
-            ['iz'] = '@call.inner',
-            ['az'] = '@call.outer',
-            ['ii'] = '@conditional.inner',
-            ['ai'] = '@conditional.outer',
-            ['iv'] = '@loop.inner',
-            ['av'] = '@loop.outer',
-            ['ir'] = '@return.inner',
-            ['ar'] = '@return.outer',
-            ['ax'] = '@statement.outer',
-          },
-          -- You can choose the select mode (default is charwise 'v')
-          --
-          -- Can also be a function which gets passed a table with the keys
-          -- * query_string: eg '@function.inner'
-          -- * method: eg 'v' or 'o'
-          -- and should return the mode ('v', 'V', or '<c-v>') or a table
-          -- mapping query_strings to modes.
-          selection_modes = {
-            ['@parameter.outer'] = 'v', -- charwise
-            ['@function.outer'] = 'V', -- linewise
-            ['@class.outer'] = 'V', -- <c-v> for blockwise but i changed it
-            ['@assignment.outer'] = 'v',
-          },
-          -- If you set this to `true` (default is `false`) then any textobject is
-          -- extended to include preceding or succeeding whitespace. Succeeding
-          -- whitespace has priority in order to act similarly to eg the built-in
-          -- `ap`.
-          --
-          -- Can also be a function which gets passed a table with the keys
-          -- * query_string: eg '@function.inner'
-          -- * selection_mode: eg 'v'
-          -- and should return true or false
-          include_surrounding_whitespace = false,
-        },
-        -- allows swapping objects back and forth - IMO only really useful for parameters
-        swap = {
-          enable = true,
-          swap_next = {
-            ['<leader>a'] = '@parameter.inner',
-          },
-          swap_previous = {
-            ['<leader>A'] = '@parameter.inner',
-          },
-        },
-        -- allows "textobject-y" jumps
-        move = {
-          enable = true,
-          set_jumps = true, -- whether to set jumps in the jumplist
-          goto_next_start = {
-            [']m'] = '@function.outer',
-            [']]'] = '@class.outer',
-          },
-          goto_next_end = {
-            [']M'] = '@function.outer',
-            [']['] = '@class.outer',
-          },
-          goto_previous_start = {
-            ['[m'] = '@function.outer',
-            ['[['] = '@class.outer',
-          },
-          goto_previous_end = {
-            ['[M'] = '@function.outer',
-            ['[]'] = '@class.outer',
-          },
-        },
-      },
     },
     config = function(_, opts)
       -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
