@@ -740,8 +740,6 @@ require('lazy').setup({
           end,
         },
       }
-      -- because dartls is an executable supplied together with dart, no need for Mason
-      require('lspconfig').dartls.setup {}
     end,
   },
 
