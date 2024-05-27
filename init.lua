@@ -310,7 +310,8 @@ require('lazy').setup({
         c = 'Class',
         d = 'Digit(s)',
         e = 'Assignment (R/L)',
-        f = 'Call, function',
+        f = 'Function',
+        F = 'Call',
         g = 'Entire file',
         o = 'Block, conditional, loop',
         q = 'Quote `, ", \'',
@@ -631,7 +632,6 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        jedi_language_server = {},
         pylsp = {
           settings = {
             pylsp = {
@@ -948,10 +948,8 @@ require('lazy').setup({
         custom_textobjects = {
           a = spec_treesitter { a = '@parameter.outer', i = '@parameter.inner' },
           c = spec_treesitter { a = '@class.outer', i = '@class.inner' },
-          f = spec_treesitter {
-            a = { '@call.outer', '@function.outer' },
-            i = { '@call.inner', '@function.inner' },
-          },
+          f = spec_treesitter { a = '@function.outer', i = '@function.inner' },
+          F = spec_treesitter { a = '@call.outer', i = '@call.inner' },
           o = spec_treesitter {
             a = { '@block.outer', '@conditional.outer', '@loop.outer' },
             i = { '@block.inner', '@conditional.inner', '@loop.inner' },
