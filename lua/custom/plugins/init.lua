@@ -190,18 +190,15 @@ return {
     end,
   },
   {
-    'LunarVim/breadcrumbs.nvim',
+    'Bekaboo/dropbar.nvim',
+    -- optional, but required for fuzzy finder support
     dependencies = {
-      { 'SmiteshP/nvim-navic' },
+      'nvim-telescope/telescope-fzf-native.nvim',
     },
     config = function()
-      require('nvim-navic').setup { lsp = { auto_attach = true, preference = { 'pyright' } } }
-      require('breadcrumbs').setup()
+      vim.keymap.set('n', '<leader>dp', require('dropbar.api').pick, { desc = '[D]ropbar [P]ick' })
     end,
   },
-  -- {
-  --   'github/copilot.vim',
-  -- },
   {
     'nvimdev/dashboard-nvim',
     event = 'VimEnter',
