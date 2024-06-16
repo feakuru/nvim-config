@@ -198,6 +198,9 @@ return {
     config = function()
       vim.keymap.set('n', '<leader>dp', require('dropbar.api').pick, { desc = '[D]ropbar [P]ick' })
     end,
+    opts = {
+      general = { update_interval = 10 },
+    },
   },
   {
     'nvimdev/dashboard-nvim',
