@@ -43,6 +43,11 @@ return {
     },
     config = function()
       require('nvim-tree').setup {
+        view = {
+          width = { min = 30, max = 150 },
+          relativenumber = true,
+          number = true,
+        },
         update_focused_file = {
           enable = true,
         },

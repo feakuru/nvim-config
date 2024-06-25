@@ -582,6 +582,10 @@ require('lazy').setup({
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
+          if client and client.name == 'ruff' then
+            -- We only need diagnostics from ruff
+            client.server_capabilities.hoverProvider = false
+          end
           if client and client.server_capabilities.documentHighlightProvider then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
@@ -641,8 +645,10 @@ require('lazy').setup({
             pylsp = {
               configurationSources = { 'flake8' },
               plugins = {
-                black = { enabled = true },
-                flake8 = { enabled = true },
+                black = { enabled = false },
+                flake8 = { enabled = false },
+                mccabe = { enabled = false },
+                pyflakes = { enabled = false },
                 pycodestyle = { enabled = false },
                 rope_autoimport = { enabled = true },
                 rope_completion = { enabled = true },
@@ -650,6 +656,7 @@ require('lazy').setup({
             },
           },
         },
+        ruff = {},
         rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -709,10 +716,6 @@ require('lazy').setup({
         local args = {
           'install',
           'pylsp-rope',
-          'python-lsp-black',
-          'pyflakes',
-          'python-lsp-ruff',
-          'sqlalchemy-stubs',
         }
 
         require('plenary.job')
