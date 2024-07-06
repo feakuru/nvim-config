@@ -645,13 +645,12 @@ require('lazy').setup({
             pylsp = {
               configurationSources = { 'flake8' },
               plugins = {
-                black = { enabled = false },
                 flake8 = { enabled = false },
+                jedi_completion = { enabled = true, fuzzy = true, resolve_at_most = 5 },
                 mccabe = { enabled = false },
                 pyflakes = { enabled = false },
                 pycodestyle = { enabled = false },
                 rope_autoimport = { enabled = true },
-                rope_completion = { enabled = true },
               },
             },
           },
@@ -837,6 +836,7 @@ require('lazy').setup({
         },
         formatting = {
           format = function(entry, vim_item)
+            print('hi this is an entry', vim.inspect(entry.source))
             if entry.source.name == 'buffer' then
               vim_item.menu = '[Buffer]'
             elseif entry.source.name == 'nvim_lsp' then
