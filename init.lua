@@ -836,7 +836,6 @@ require('lazy').setup({
         },
         formatting = {
           format = function(entry, vim_item)
-            print('hi this is an entry', vim.inspect(entry.source))
             if entry.source.name == 'buffer' then
               vim_item.menu = '[Buffer]'
             elseif entry.source.name == 'nvim_lsp' then
