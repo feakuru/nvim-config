@@ -20,6 +20,14 @@ local function do_custom_commit(prefix)
   end
 end
 
+local function wrap_git_cmd(command)
+  local ok, err = pcall(vim.cmd, 'G ' .. command)
+  if not ok then
+    vim.health.warn(string.format("Could not %s: '%s'", command, err))
+  end
+  return ok
+end
+
 return {
   {
     'christoomey/vim-tmux-navigator',
@@ -214,6 +222,19 @@ return {
       vim.keymap.set('n', '<leader>gd', '<Cmd>Git diff<CR>', { desc = '[G]it [D]iff' })
       vim.keymap.set('n', '<leader>gl', '<Cmd>Git log<CR>', { desc = '[G]it [L]og' })
       vim.keymap.set('n', '<leader>gw', '<Cmd>Git blame<CR>', { desc = '[G]it [W]hodunit (Blame)' })
+      vim.keymap.set('n', '<leader>gM', function()
+        local commands = {
+          'checkout main',
+          'pull',
+          'checkout -',
+          'merge main',
+        }
+        for _, command in ipairs(commands) do
+          if not wrap_git_cmd(command) then
+            return
+          end
+        end
+      end, { desc = '[G]it merge in [M]ain branch' })
     end,
   },
   {
