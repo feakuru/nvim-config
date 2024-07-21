@@ -297,9 +297,9 @@ require('lazy').setup({
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-    config = function() -- This is the function that runs, AFTER loading
+    config = function()
       require('which-key').setup()
-      local i = {
+      local defined_textobjects = {
         [' '] = 'Whitespace',
         ['"'] = 'Balanced "',
         ["'"] = "Balanced '",
@@ -326,21 +326,24 @@ require('lazy').setup({
         q = 'Quote `, ", \'',
         r = 'Return',
       }
-      local a = vim.deepcopy(i)
-      for k, v in pairs(a) do
-        a[k] = v:gsub(' including.*', '')
+      local around_mappings = vim.deepcopy(defined_textobjects)
+      for k, v in pairs(around_mappings) do
+        around_mappings[k] = v:gsub(' including.*', '')
       end
 
-      local ic = vim.deepcopy(i)
-      local ac = vim.deepcopy(a)
+      local defined_mappings = {}
       for key, name in pairs { n = 'Next', l = 'Last' } do
-        i[key] = vim.tbl_extend('force', { name = 'Inside ' .. name .. ' textobject' }, ic)
-        a[key] = vim.tbl_extend('force', { name = 'Around ' .. name .. ' textobject' }, ac)
+        table.insert(defined_mappings, { 'i' .. key, desc = 'Inside ' .. name .. ' textobject', mode = { 'o', 'x' } })
+        table.insert(defined_mappings, { 'a' .. key, desc = 'Around ' .. name .. ' textobject', mode = { 'o', 'x' } })
+        for subkey, subname in pairs(defined_textobjects) do
+          table.insert(defined_mappings, { 'i' .. key .. subkey, desc = subname, mode = { 'o', 'x' } })
+        end
+        for subkey, subname in pairs(around_mappings) do
+          table.insert(defined_mappings, { 'a' .. key .. subkey, desc = subname, mode = { 'o', 'x' } })
+        end
       end
-      require('which-key').register {
-        mode = { 'o', 'x' },
-        i = i,
-        a = a,
+      require('which-key').add {
+        defined_mappings,
       }
 
       -- Document existing key chains
