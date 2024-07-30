@@ -193,15 +193,6 @@ return {
     end,
   },
   {
-    'folke/neodev.nvim',
-    opts = {},
-    config = function()
-      require('neodev').setup {
-        library = { plugins = { 'nvim-dap-ui' }, types = true },
-      }
-    end,
-  },
-  {
     'tpope/vim-fugitive',
     config = function()
       vim.keymap.set('n', '<leader>gb', '<Cmd>Telescope git_branches<CR>', { desc = '[G]it [B]ranches' })
