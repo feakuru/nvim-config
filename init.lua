@@ -428,6 +428,16 @@ require('lazy').setup({
           oldfiles = {
             cwd_only = true,
           },
+          find_files = {
+            find_command = {
+              'rg',
+              '--files',
+              '--hidden',
+              '--glob',
+              '!**/{.git,.mypy_cache,.ropeproject,__pycache__}/*',
+              '--unrestricted',
+            },
+          },
         },
         extensions = {
           ['ui-select'] = {
