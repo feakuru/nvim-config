@@ -368,7 +368,7 @@ require('lazy').setup({
         { '<leader>ih', group = 'Toggle [I]nlay [H]ints' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       }
-    end
+    end,
   },
 
   -- NOTE: Plugins can specify dependencies.
@@ -452,6 +452,13 @@ require('lazy').setup({
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
+          },
+        },
+        defaults = {
+          layout_config = {
+            horizontal = {
+              preview_width = 0.6,
+            },
           },
         },
       }

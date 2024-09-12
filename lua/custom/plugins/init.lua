@@ -30,19 +30,6 @@ end
 
 return {
   {
-    'christoomey/vim-tmux-navigator',
-    cmd = {
-      'TmuxNavigateLeft',
-      'TmuxNavigateDown',
-      'TmuxNavigateUp',
-      'TmuxNavigateRight',
-      'TmuxNavigatePrevious',
-    },
-    keys = {
-      -- there were come ctrl+hjkl stuff here but i don't think i need it, use alt+arrows
-    },
-  },
-  {
     'nvim-tree/nvim-tree.lua',
     version = '*',
     lazy = false,
@@ -284,5 +271,28 @@ return {
         auto_session_suppress_dirs = { '~/', '~/projects', '~/Downloads', '/' },
       }
     end,
+  },
+  {
+    'folke/noice.nvim',
+    event = 'VeryLazy',
+    opts = {
+      lsp = {
+        override = {
+          ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+          ['vim.lsp.util.stylize_markdown'] = true,
+          ['cmp.entry.get_documentation'] = true,
+        },
+      },
+      presets = {
+        bottom_search = true,
+        long_message_to_split = true,
+        inc_rename = false,
+        lsp_doc_border = false,
+      },
+    },
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'rcarriga/nvim-notify',
+    },
   },
 }
