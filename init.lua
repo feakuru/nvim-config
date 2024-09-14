@@ -212,6 +212,12 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<leader>tsj', '<Cmd>split<CR>', { desc = 'Split down' })
+vim.keymap.set('n', '<leader>tsl', '<Cmd>vsplit<CR>', { desc = 'Split right' })
+
+-- Keybind for quick access to the terminal
+-- description doesn't make a ton of sense but this is what makes the most sense
+vim.keymap.set('n', '<leader>ct', '<Cmd>term<CR>', { desc = '[C]ode [T]erminal' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
