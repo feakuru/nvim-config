@@ -199,7 +199,13 @@ return {
       vim.keymap.set('n', '<leader>gf', '<Cmd>Git pull<CR>', { desc = '[G]it [F]pull' })
       vim.keymap.set('n', '<leader>gd', '<Cmd>Git diff<CR>', { desc = '[G]it [D]iff' })
       vim.keymap.set('n', '<leader>gl', '<Cmd>Git log<CR>', { desc = '[G]it [L]og' })
-      vim.keymap.set('n', '<leader>gw', '<Cmd>Git blame<CR>', { desc = '[G]it [W]hodunit (Blame)' })
+      vim.keymap.set('n', '<leader>gw', function()
+        if vim.bo.filetype == 'fugitiveblame' then
+          vim.cmd 'q'
+        else
+          vim.cmd 'G blame'
+        end
+      end, { desc = '[G]it [W]hodunit (Blame)' })
       vim.keymap.set('n', '<leader>gM', function()
         local commands = {
           'checkout main',
