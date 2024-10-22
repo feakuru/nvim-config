@@ -54,7 +54,7 @@ return {
           },
         },
       }
-      vim.keymap.set('n', '<leader>tt', ':NvimTreeToggle\n', { desc = '[T]oggle NVim[T]ree' })
+      vim.keymap.set('n', '<leader>tt', '<Cmd>NvimTreeToggle<CR>', { desc = '[T]oggle NVim[T]ree' })
     end,
   },
   {
@@ -80,7 +80,7 @@ return {
   {
     'mfussenegger/nvim-dap',
     config = function()
-      vim.keymap.set('n', '<leader>db', '<cmd> DapToggleBreakpoint <CR>', { desc = '[D]ebug [B]reakpoint' })
+      vim.keymap.set('n', '<leader>db', '<Cmd>DapToggleBreakpoint<CR>', { desc = '[D]ebug [B]reakpoint' })
       vim.keymap.set('n', '<F5>', function()
         require('dap').continue()
       end, { desc = 'Step Over' })
