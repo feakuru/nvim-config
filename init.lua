@@ -302,6 +302,15 @@ require('lazy').setup({
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
+    keys = {
+      {
+        '<leader>?',
+        function()
+          require('which-key').show { global = false }
+        end,
+        desc = 'Buffer Local Keymaps (Which key[?])',
+      },
+    },
     opts = {
       icons = {
         -- set icon mappings to true if you have a Nerd Font
