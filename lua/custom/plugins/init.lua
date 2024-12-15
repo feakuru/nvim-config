@@ -300,6 +300,9 @@ return {
       'MunifTanjim/nui.nvim',
       'rcarriga/nvim-notify',
     },
+    keys = {
+      { '<leader>tvn', '<Cmd>Telescope notify<CR>', { desc = '[T]elescope: [v]iew [n]otifications' } },
+    },
   },
   {
     'kawre/leetcode.nvim',
