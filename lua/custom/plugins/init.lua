@@ -328,4 +328,14 @@ return {
       },
     },
   },
+  {
+    'rcarriga/nvim-notify',
+    config = {
+      fps = 60,
+      level = 1,
+      render = 'compact',
+      stages = 'fade',
+      timeout = 2500,
+    },
+  },
 }
