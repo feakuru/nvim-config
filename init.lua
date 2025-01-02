@@ -350,8 +350,8 @@ require('lazy').setup({
         },
       },
     },
-    config = function()
-      require('which-key').setup()
+    init = function()
+      local wk = require 'which-key'
       local defined_textobjects = {
         [' '] = 'Whitespace',
         ['"'] = 'Balanced "',
@@ -380,14 +380,17 @@ require('lazy').setup({
         r = 'Return',
       }
       local around_mappings = vim.deepcopy(defined_textobjects)
+      local defined_mappings = {}
+
       for k, v in pairs(around_mappings) do
+        table.insert(defined_mappings, { 'i' .. k, desc = 'inner ' .. v, mode = { 'o', 'x' } })
         around_mappings[k] = v:gsub(' including.*', '')
+        table.insert(defined_mappings, { 'a' .. k, desc = around_mappings[k], mode = { 'o', 'x' } })
       end
 
-      local defined_mappings = {}
       for key, name in pairs { n = 'Next', l = 'Last' } do
-        table.insert(defined_mappings, { 'i' .. key, desc = 'Inside ' .. name .. ' textobject', mode = { 'o', 'x' } })
-        table.insert(defined_mappings, { 'a' .. key, desc = 'Around ' .. name .. ' textobject', mode = { 'o', 'x' } })
+        table.insert(defined_mappings, { 'i' .. key, desc = 'inner ' .. name .. ' textobject', mode = { 'o', 'x' } })
+        table.insert(defined_mappings, { 'a' .. key, desc = name .. ' textobject', mode = { 'o', 'x' } })
         for subkey, subname in pairs(defined_textobjects) do
           table.insert(defined_mappings, { 'i' .. key .. subkey, desc = subname, mode = { 'o', 'x' } })
         end
@@ -395,12 +398,12 @@ require('lazy').setup({
           table.insert(defined_mappings, { 'a' .. key .. subkey, desc = subname, mode = { 'o', 'x' } })
         end
       end
-      require('which-key').add {
+      wk.add {
         defined_mappings,
       }
 
       -- Document existing key chains
-      require('which-key').add {
+      wk.add {
         { '<leader>c', group = '[C]ode' },
         { '<leader>d', group = '[D]oc: Debug, Dropbar, Symbols...' },
         { '<leader>r', group = '[R]ename' },
