@@ -793,7 +793,7 @@ require('lazy').setup({
                 -- Get the language server to recognize the `vim` global
                 globals = { 'vim' },
                 -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-                -- disable = { 'missing-fields' },
+                disable = { 'missing-fields' },
               },
               workspace = {
                 -- Make the server aware of Neovim runtime files
