@@ -7,7 +7,15 @@ local function wrap_git_cmd(command)
 end
 
 local function do_custom_commit(prefix)
-  local ok, _ = wrap_git_cmd 'commit -a'
+  -- only do `git commit -a` if we haven't specifically staged some files.
+  -- if this causes me to have to add everything sometimes: does remembering
+  -- about <leader>gaa help?
+  local diff = vim.fn.system 'git diff --name-only --cached'
+  local cmd = 'commit -a'
+  if diff and #diff > 0 then
+    cmd = 'commit'
+  end
+  local ok, _ = wrap_git_cmd(cmd)
   if not ok then
     return
   end
@@ -34,9 +42,16 @@ return {
   {
     'tpope/vim-fugitive',
     config = function()
-      vim.keymap.set('n', '<leader>gb', '<Cmd>Telescope git_branches<CR>', { desc = '[G]it [B]ranches' })
+      -- basic stuff
       vim.keymap.set('n', '<leader>gs', '<Cmd>Git<CR>', { desc = '[G]it [S]tatus' })
       vim.keymap.set('n', '<leader>gaa', '<Cmd>Git add -A<CR>', { desc = '[G]it [A]dd [A]ll' })
+      vim.keymap.set('n', '<leader>gb', '<Cmd>Telescope git_branches<CR>', { desc = '[G]it [B]ranches' })
+      vim.keymap.set('n', '<leader>gp', '<Cmd>Git push<CR>', { desc = '[G]it [P]ush' })
+      vim.keymap.set('n', '<leader>gf', '<Cmd>Git pull<CR>', { desc = '[G]it [F]pull' })
+      vim.keymap.set('n', '<leader>gd', '<Cmd>Git diff<CR>', { desc = '[G]it [D]iff' })
+      vim.keymap.set('n', '<leader>gl', '<Cmd>Git log<CR>', { desc = '[G]it [L]og' })
+
+      -- various commit prefixes
       vim.keymap.set('n', '<leader>gcf', function()
         do_custom_commit 'feat'
       end, { desc = '[G]it [C]ommit [F]eat' })
@@ -50,10 +65,7 @@ return {
         do_custom_commit ''
       end, { desc = '[G]it [C]ommit [E]mpty' })
 
-      vim.keymap.set('n', '<leader>gp', '<Cmd>Git push<CR>', { desc = '[G]it [P]ush' })
-      vim.keymap.set('n', '<leader>gf', '<Cmd>Git pull<CR>', { desc = '[G]it [F]pull' })
-      vim.keymap.set('n', '<leader>gd', '<Cmd>Git diff<CR>', { desc = '[G]it [D]iff' })
-      vim.keymap.set('n', '<leader>gl', '<Cmd>Git log<CR>', { desc = '[G]it [L]og' })
+      -- blame: will handle opening on another file
       vim.keymap.set('n', '<leader>gw', function()
         if vim.bo.filetype == 'fugitiveblame' then
           vim.cmd 'q'
@@ -61,6 +73,9 @@ return {
           vim.cmd 'G blame'
         end
       end, { desc = '[G]it [W]hodunit (Blame)' })
+
+      -- quickly merge in main
+      -- TODO: add check for the branch name `master`
       vim.keymap.set('n', '<leader>gM', function()
         local commands = {
           'checkout main',
