@@ -11,8 +11,5 @@ return {
       vim.keymap.set('n', '[;', dropbar_api.goto_context_start, { desc = 'Goto start of current context' })
       vim.keymap.set('n', '];', dropbar_api.select_next_context, { desc = 'Select next context' })
     end,
-    opts = {
-      general = { update_interval = 10 },
-    },
   },
 }
