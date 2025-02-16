@@ -684,7 +684,6 @@ require('lazy').setup({
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
           if client then
-            print(client.name)
             -- I do not need the LSP highlight, and it seems broken (probably only in pylsp
             -- but I can't figure out where). I should just use */# and g*/g#
             client.server_capabilities.semanticTokensProvider = nil
