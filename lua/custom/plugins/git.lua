@@ -50,6 +50,7 @@ return {
       vim.keymap.set('n', '<leader>gf', '<Cmd>Git pull<CR>', { desc = '[G]it [F]pull' })
       vim.keymap.set('n', '<leader>gd', '<Cmd>Git diff<CR>', { desc = '[G]it [D]iff' })
       vim.keymap.set('n', '<leader>gl', '<Cmd>Git log<CR>', { desc = '[G]it [L]og' })
+      vim.keymap.set('n', '<leader>gm', '<Cmd>Git mergetool<CR>', { desc = '[G]it [M]ergetool' })
 
       -- various commit prefixes
       vim.keymap.set('n', '<leader>gcf', function()
