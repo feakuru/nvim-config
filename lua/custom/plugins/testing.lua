@@ -22,9 +22,9 @@ return {
       vim.keymap.set('n', '<leader>tn', function()
         require('neotest').run.run()
       end, { desc = '[T]ests: Run [N]earest' })
-      vim.keymap.set('n', '<leader>tdn', function()
+      vim.keymap.set('n', '<leader>dn', function()
         require('neotest').run.run { strategy = 'dap' }
-      end, { desc = '[T]ests: [D]ebug [N]earest' })
+      end, { desc = '[D]ebug [N]earest test' })
       vim.keymap.set('n', '<leader>tf', function()
         require('neotest').run.run(vim.fn.expand '%')
       end, { desc = '[T]ests: Run all tests in [F]ile' })

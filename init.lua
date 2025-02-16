@@ -188,7 +188,9 @@ vim.keymap.set('n', '<leader>e', function()
   vim.diagnostic.open_float { source = true }
 end, { desc = 'Show diagnostic [E]rror messages' })
 
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>qt', '<Cmd>Telescope quickfix<CR>', { desc = 'View [Q]uickfixes in [T]elescope' })
+vim.keymap.set('n', '[q', '<Cmd>cprevious<CR>', { desc = 'Previous quickfix' })
+vim.keymap.set('n', ']q', '<Cmd>cnext<CR>', { desc = 'Next quickfix' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -212,12 +214,15 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-vim.keymap.set('n', '<leader>tsj', '<Cmd>split<CR>', { desc = 'Split down' })
-vim.keymap.set('n', '<leader>tsl', '<Cmd>vsplit<CR>', { desc = 'Split right' })
+vim.keymap.set('n', '<leader>wh', '<Cmd>split<CR><C-w>H', { desc = 'Split left' })
+vim.keymap.set('n', '<leader>wj', '<Cmd>split<CR>', { desc = 'Split down' })
+vim.keymap.set('n', '<leader>wk', '<Cmd>split<CR><C-w>K', { desc = 'Split up' })
+vim.keymap.set('n', '<leader>wl', '<Cmd>vsplit<CR>', { desc = 'Split right' })
 
 -- Keybind for quick access to the terminal
 -- description doesn't make a ton of sense but this is what makes the most sense
-vim.keymap.set('n', '<leader>ct', '<Cmd>term<CR>', { desc = '[C]ode [T]erminal' })
+vim.keymap.set('n', '<leader>tt', '<Cmd>vsplit<CR><Cmd>term<CR>', { desc = '[T]oggle [T]erminal right' })
+vim.keymap.set('n', '<leader>tT', '<Cmd>split<CR><Cmd>term<CR>', { desc = '[T]oggle [T]erminal down' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -416,15 +421,14 @@ require('lazy').setup({
 
       -- Document existing key chains
       wk.add {
-        { '<leader>c', group = '[C]ode' },
-        { '<leader>d', group = '[D]oc: Debug, Dropbar, Symbols...' },
-        { '<leader>r', group = '[R]ename' },
+        { '<leader>d', group = '[D]: Debug/Devcontainers/Delete' },
         { '<leader>s', group = '[S]earch' },
-        { '<leader>w', group = '[W]orkspace' },
-        { '<leader>t', group = '[T]oggle' },
+        { '<leader>w', group = '[W]indow' },
+        { '<leader>t', group = '[T]: Toggle/Tests' },
         { '<leader>g', group = '[G]it' },
+        { '<leader>q', group = '[Q]uickfix' },
         { '<leader>gc', group = '[G]it [C]ommit' },
-        { '<leader>ih', group = 'Toggle [I]nlay [H]ints' },
+        { '<leader>ih', group = '[I]nlay [H]ints' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       }
     end,
@@ -786,6 +790,7 @@ require('lazy').setup({
           },
         },
         rust_analyzer = {},
+        zls = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:

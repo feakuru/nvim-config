@@ -52,7 +52,7 @@ return {
       'rcarriga/nvim-notify',
     },
     keys = {
-      { '<leader>tvn', '<Cmd>Telescope notify<CR>', { desc = '[T]elescope: [v]iew [n]otifications' } },
+      { '<leader>n', '<Cmd>Telescope notify<CR>', { desc = 'Telescope: notifications' } },
     },
   },
 }
