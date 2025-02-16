@@ -824,9 +824,6 @@ require('lazy').setup({
       -- other tools, you can run
       --    :Mason
       --
-<<<<<<< HEAD
-      --  You can press `g?` for help in this menu.
-      require('mason').setup()
 
       -- PyLSP config: install additional plugins
       local pylsp = require('mason-registry').get_package 'python-lsp-server'
@@ -852,13 +849,11 @@ require('lazy').setup({
           :start()
       end)
 
-=======
       -- You can press `g?` for help in this menu.
       --
       -- `mason` had to be setup earlier: to configure its options see the
       -- `dependencies` table for `nvim-lspconfig` above.
       --
->>>>>>> 94f551b8039a3f6399d2ea3373c4774005ede4db
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
