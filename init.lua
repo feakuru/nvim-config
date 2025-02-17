@@ -593,7 +593,7 @@ require('lazy').setup({
       {
         'williamboman/mason.nvim',
         opts = {},
-        init = function (_)
+        init = function(_)
           -- PyLSP config: install additional plugins
           local pylsp = require('mason-registry').get_package 'python-lsp-server'
           pylsp:on('install:success', function()
@@ -613,8 +613,7 @@ require('lazy').setup({
 
             vim.system(command, { cwd = path .. '/venv/bin' })
           end)
-
-        end
+        end,
       },
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
