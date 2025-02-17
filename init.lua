@@ -590,7 +590,32 @@ require('lazy').setup({
       -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
       -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
-      { 'williamboman/mason.nvim', opts = {} },
+      {
+        'williamboman/mason.nvim',
+        opts = {},
+        init = function (_)
+          -- PyLSP config: install additional plugins
+          local pylsp = require('mason-registry').get_package 'python-lsp-server'
+          pylsp:on('install:success', function()
+            local function mason_package_path(package)
+              local path = vim.fn.resolve(vim.fn.stdpath 'data' .. '/mason/packages/' .. package)
+              return path
+            end
+
+            local path = mason_package_path 'python-lsp-server'
+            local command = {
+              './pip',
+              'install',
+              '-U',
+              'pylsp-rope',
+              'pylsp-mypy',
+            }
+
+            vim.system(command, { cwd = path .. '/venv/bin' })
+          end)
+
+        end
+      },
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
@@ -834,30 +859,6 @@ require('lazy').setup({
       -- other tools, you can run
       --    :Mason
       --
-
-      -- PyLSP config: install additional plugins
-      local pylsp = require('mason-registry').get_package 'python-lsp-server'
-      pylsp:on('install:success', function()
-        local function mason_package_path(package)
-          local path = vim.fn.resolve(vim.fn.stdpath 'data' .. '/mason/packages/' .. package)
-          return path
-        end
-
-        local path = mason_package_path 'python-lsp-server'
-        local command = path .. '/venv/bin/pip'
-        local args = {
-          'install',
-          'pylsp-rope',
-        }
-
-        require('plenary.job')
-          :new({
-            command = command,
-            args = args,
-            cwd = path,
-          })
-          :start()
-      end)
 
       -- You can press `g?` for help in this menu.
       --
