@@ -27,6 +27,9 @@ return {
       window = {
         mappings = {
           ['\\'] = 'close_window',
+          -- TODO:
+          -- 1. add mapping to add __init__.py
+          -- 2. figure out how to move multiple files
         },
       },
     },
