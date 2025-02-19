@@ -186,7 +186,7 @@ vim.keymap.set('n', ']d', function()
 end, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>e', function()
   vim.diagnostic.open_float { source = true }
-end, { desc = 'Show diagnostic [E]rror messages' })
+end, { desc = '[E]rrors and diagnostics' })
 
 vim.keymap.set('n', '<leader>qt', '<Cmd>Telescope quickfix<CR>', { desc = 'View [Q]uickfixes in [T]elescope' })
 vim.keymap.set('n', '[q', '<Cmd>cprevious<CR>', { desc = 'Previous quickfix' })
@@ -323,7 +323,7 @@ require('lazy').setup({
         function()
           require('which-key').show { global = false }
         end,
-        desc = 'Buffer Local Keymaps (Which key[?])',
+        desc = 'Which key[?]',
       },
     },
     opts = {
@@ -425,11 +425,14 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]indow' },
         { '<leader>t', group = '[T]: Toggle/Tests' },
-        { '<leader>g', group = '[G]it' },
         { '<leader>q', group = '[Q]uickfix' },
+        { '<leader>g', group = '[G]it' },
         { '<leader>gc', group = '[G]it [C]ommit' },
         { '<leader>ih', group = '[I]nlay [H]ints' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>y', group = '[Y]azi' },
+        { '<leader>l', group = '[L]SP' },
+        { '<leader>ls', group = '[L]SP [S]ymbols' },
       }
     end,
   },
@@ -541,8 +544,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files' })
+      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Open buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -551,7 +554,7 @@ require('lazy').setup({
           winblend = 10,
           previewer = false,
         })
-      end, { desc = '[/] Fuzzily search in current buffer' })
+      end, { desc = '[/] Search buffer' })
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
@@ -560,7 +563,7 @@ require('lazy').setup({
           grep_open_files = true,
           prompt_title = 'Live Grep in Open Files',
         }
-      end, { desc = '[S]earch [/] in Open Files' })
+      end, { desc = '[S]earch [/] Open Files' })
       vim.keymap.set('n', '<leader>su', '<Cmd>Telescope undo<CR>', { desc = '[S]earch [U]ndo History' })
 
       -- Shortcut for searching your Neovim configuration files
