@@ -8,26 +8,6 @@ return {
       stages = 'fade',
       timeout = 2500,
     },
-    {
-      'epwalsh/obsidian.nvim',
-      version = '*',
-      lazy = true,
-      event = {
-        'BufReadPre ' .. vim.fn.expand '~' .. '/Obsidian/*.md',
-      },
-      dependencies = {
-        'nvim-lua/plenary.nvim',
-      },
-      opts = {
-        workspaces = {
-          -- TODO: generate config of this form automatically from filesystem
-          -- {
-          --   name = '<name>',
-          --   path = '<folder>',
-          -- },
-        },
-      },
-    },
   },
   {
     'folke/noice.nvim',
