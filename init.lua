@@ -1168,7 +1168,11 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
-      require('mini.operators').setup()
+      require('mini.operators').setup({
+        exchange = {
+          prefix = 'gX',
+        }
+      })
       require('mini.jump').setup()
 
       -- Simple and easy statusline.
