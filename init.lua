@@ -168,6 +168,7 @@ vim.opt.conceallevel = 1
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.opt.confirm = true
+vim.g.zig_fmt_autosave = false
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
