@@ -516,7 +516,7 @@ require('lazy').setup({
               '--files',
               '--hidden',
               '--glob',
-              '!**/{.git,.mypy_cache,.ropeproject,__pycache__,.venv}/*',
+              '!**/{.git,.mypy_cache,.ropeproject,__pycache__,.venv,target,.zig-cache}/*',
               '--unrestricted',
             },
           },
