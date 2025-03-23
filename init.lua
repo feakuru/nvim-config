@@ -1174,7 +1174,13 @@ require('lazy').setup({
           prefix = 'gX',
         }
       })
-      require('mini.jump').setup()
+      _MiniJump = require('mini.jump')
+      _MiniJump.setup()
+      vim.keymap.set('n', ',', function ()
+        _MiniJump.jump(nil, not MiniJump.state.backward)
+        -- We have to flip the state back because the jump just altered it
+        _MiniJump.state.backward = not MiniJump.state.backward
+      end)
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
