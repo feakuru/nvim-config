@@ -1169,13 +1169,18 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
+      -- Use 'ga' and 'gA' to align columns in lines
+      require('mini.align').setup()
+      -- Various interesting operators; see which-key by prefix 'g'
       require('mini.operators').setup({
         exchange = {
           prefix = 'gX',
         }
       })
+
       _MiniJump = require('mini.jump')
       _MiniJump.setup()
+      -- Allow jumping in opposit directions with ',' (counterpart to ';')
       vim.keymap.set('n', ',', function ()
         _MiniJump.jump(nil, not MiniJump.state.backward)
         -- We have to flip the state back because the jump just altered it
