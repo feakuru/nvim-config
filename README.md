@@ -1,4 +1,4 @@
-# kickstart.nvim
+# feakuru's nvim config
 
 > NB: this is a fork of [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)
 
