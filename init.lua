@@ -602,25 +602,7 @@ require('lazy').setup({
         'williamboman/mason.nvim',
         opts = {},
         init = function(_)
-          -- PyLSP config: install additional plugins
-          local pylsp = require('mason-registry').get_package 'python-lsp-server'
-          pylsp:on('install:success', function()
-            local function mason_package_path(package)
-              local path = vim.fn.resolve(vim.fn.stdpath 'data' .. '/mason/packages/' .. package)
-              return path
-            end
-
-            local path = mason_package_path 'python-lsp-server'
-            local command = {
-              './pip',
-              'install',
-              '-U',
-              'pylsp-rope',
-              'pylsp-mypy',
-            }
-
-            vim.system(command, { cwd = path .. '/venv/bin' })
-          end)
+          vim.keymap.set('n', '<leader>m', '<Cmd>Mason<CR>', { desc = '[M]ason' })
         end,
       },
       'williamboman/mason-lspconfig.nvim',
@@ -734,12 +716,12 @@ require('lazy').setup({
           if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
             -- I do not need the LSP highlight, and it seems broken (probably only in pylsp
             -- but I can't figure out where). I should just use */# and g*/g#
-            client.server_capabilities.semanticTokensProvider = nil
+            -- client.server_capabilities.semanticTokensProvider = nil
           end
-          -- if client and client.name == 'ruff' then
-          --   -- We only need diagnostics from ruff
-          --   client.server_capabilities.hoverProvider = false
-          -- end
+          if client and client.name == 'basedpyright' then
+            local ns = vim.lsp.diagnostic.get_namespace(client.id)
+            vim.diagnostic.enable(false, { ns_id = ns })
+          end
           -- if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
           --   local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
           --   vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
@@ -828,17 +810,13 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         gopls = {},
-        pylsp = {
+        html = {},
+        basedpyright = {
           settings = {
-            pylsp = {
-              configurationSources = { 'flake8' },
-              plugins = {
-                flake8 = { enabled = false },
-                jedi_completion = { enabled = true, fuzzy = true, resolve_at_most = 5 },
-                mccabe = { enabled = false },
-                pyflakes = { enabled = false },
-                pycodestyle = { enabled = false },
-                rope_autoimport = { enabled = true },
+            basedpyright = {
+              analysis = {
+                diagnosticMode = 'off',
+                typeCheckingMode = 'off',
               },
             },
           },
@@ -1129,16 +1107,16 @@ require('lazy').setup({
       -- Use 'ga' and 'gA' to align columns in lines
       require('mini.align').setup()
       -- Various interesting operators; see which-key by prefix 'g'
-      require('mini.operators').setup({
+      require('mini.operators').setup {
         exchange = {
           prefix = 'gX',
-        }
-      })
+        },
+      }
 
-      _MiniJump = require('mini.jump')
+      _MiniJump = require 'mini.jump'
       _MiniJump.setup()
       -- Allow jumping in opposit directions with ',' (counterpart to ';')
-      vim.keymap.set('n', ',', function ()
+      vim.keymap.set('n', ',', function()
         _MiniJump.jump(nil, not MiniJump.state.backward)
         -- We have to flip the state back because the jump just altered it
         _MiniJump.state.backward = not MiniJump.state.backward
