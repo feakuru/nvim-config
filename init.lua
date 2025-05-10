@@ -185,10 +185,10 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', function()
-  vim.diagnostic.goto_prev { float = { source = true } }
+  vim.diagnostic.jump { count = -1, float = true }
 end, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', function()
-  vim.diagnostic.goto_next { float = { source = true } }
+  vim.diagnostic.jump { count = 1, float = true }
 end, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>e', function()
   vim.diagnostic.open_float { source = true }
@@ -713,14 +713,11 @@ require('lazy').setup({
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
-            -- I do not need the LSP highlight, and it seems broken (probably only in pylsp
-            -- but I can't figure out where). I should just use */# and g*/g#
-            -- client.server_capabilities.semanticTokensProvider = nil
-          end
           if client and client.name == 'basedpyright' then
             local ns = vim.lsp.diagnostic.get_namespace(client.id)
             vim.diagnostic.enable(false, { ns_id = ns })
+            client.server_capabilities.diagnosticProvider = nil
+            client.handlers["textDocument/publishDiagnostics"] = function () end
           end
           -- if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
           --   local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
