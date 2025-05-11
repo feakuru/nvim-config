@@ -717,7 +717,7 @@ require('lazy').setup({
             local ns = vim.lsp.diagnostic.get_namespace(client.id)
             vim.diagnostic.enable(false, { ns_id = ns })
             client.server_capabilities.diagnosticProvider = nil
-            client.handlers["textDocument/publishDiagnostics"] = function () end
+            client.handlers['textDocument/publishDiagnostics'] = function() end
           end
           -- if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
           --   local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })

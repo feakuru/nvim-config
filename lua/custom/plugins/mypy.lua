@@ -1,6 +1,6 @@
 return {
   {
-    "feakuru/mypy.nvim",
+    'feakuru/mypy.nvim',
     config = function()
       require('mypy').setup()
     end,
