@@ -602,7 +602,7 @@ require('lazy').setup({
         'williamboman/mason.nvim',
         opts = {},
         init = function(_)
-          vim.keymap.set('n', '<leader>m', '<Cmd>Mason<CR>', { desc = '[M]ason' })
+          vim.keymap.set('n', '<leader>mn', '<Cmd>Mason<CR>', { desc = '[M]aso[n]' })
         end,
       },
       'williamboman/mason-lspconfig.nvim',
