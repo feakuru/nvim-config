@@ -92,4 +92,12 @@ return {
       end, { desc = '[G]it merge in [M]ain branch' })
     end,
   },
+  {
+    'NeogitOrg/neogit',
+    dependencies = {
+      'nvim-lua/plenary.nvim', -- required
+      'sindrets/diffview.nvim', -- optional - Diff integration
+      'nvim-telescope/telescope.nvim', -- optional
+    },
+  },
 }
