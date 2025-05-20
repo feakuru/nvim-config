@@ -18,7 +18,7 @@ return {
       end,
     },
   },
-  cmd = 'Neotree',
+  lazy = false,
   keys = {
     { '\\', ':Neotree toggle reveal<CR>', desc = 'NeoTree reveal', silent = true },
   },
