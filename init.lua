@@ -199,8 +199,18 @@ vim.keymap.set('n', '<leader>e', function()
 end, { desc = '[E]rrors and diagnostics' })
 
 vim.keymap.set('n', '<leader>qt', '<Cmd>Telescope quickfix<CR>', { desc = 'View [Q]uickfixes in [T]elescope' })
-vim.keymap.set('n', '[q', '<Cmd>cprevious<CR>', { desc = 'Previous quickfix' })
-vim.keymap.set('n', ']q', '<Cmd>cnext<CR>', { desc = 'Next quickfix' })
+vim.keymap.set('n', '[q', function()
+  require('trouble').prev {
+    skip_groups = true,
+    jump = true,
+  }
+end, { desc = 'Previous quickfix' })
+vim.keymap.set('n', ']q', function()
+  require('trouble').next {
+    skip_groups = true,
+    jump = true,
+  }
+end, { desc = 'Next quickfix' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -605,11 +615,13 @@ require('lazy').setup({
       -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
       -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
-      { 'mason-org/mason.nvim', opts = {}, 
+      {
+        'mason-org/mason.nvim',
+        opts = {},
         init = function(_)
           vim.keymap.set('n', '<leader>mn', '<Cmd>Mason<CR>', { desc = '[M]aso[n]' })
         end,
-  },
+      },
       'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
