@@ -984,6 +984,16 @@ require('lazy').setup({
           {
             'rafamadriz/friendly-snippets',
             config = function()
+              local ls = require 'luasnip'
+
+              -- the shortcuts for snippet jumps that i am used to
+              vim.keymap.set({ 'i', 's' }, '<C-L>', function()
+                ls.jump(1)
+              end, { silent = true })
+              vim.keymap.set({ 'i', 's' }, '<C-H>', function()
+                ls.jump(-1)
+              end, { silent = true })
+
               require('luasnip.loaders.from_vscode').lazy_load()
             end,
           },
