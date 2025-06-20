@@ -91,12 +91,15 @@ return {
               local selection = ts_actions_state.get_selected_entry()
               ts_actions.close(prompt_bufnr)
               callback(selection.value)
-            end)
+            end, { desc = 'Confirm choice' })
             map('n', '<CR>', function(prompt_bufnr)
               local selection = ts_actions_state.get_selected_entry()
               ts_actions.close(prompt_bufnr)
               callback(selection.value)
-            end)
+            end, { desc = 'Confirm choice' })
+            -- allow clearing prompt with <C-u>
+            map('i', '<C-u>', false)
+            map('n', '<C-u>', false)
             return true
           end,
         }
