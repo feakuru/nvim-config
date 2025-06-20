@@ -90,9 +90,9 @@ return {
             end
           end
         end)
-      end, { desc = '[G]it: pull and [M]erge a branch' })
+      end, { desc = '[G]it pull and [M]erge' })
 
-      vim.keymap.set('n', '<leader>gR', function()
+      vim.keymap.set('n', '<leader>gRs', function()
         vim.ui.input({ prompt = 'Branch to rebase onto:', default = 'origin/develop' }, function(branch_name)
           local commands = {
             'pull',
@@ -104,7 +104,9 @@ return {
             end
           end
         end)
-      end)
+      end, {desc = '[G]it [R]ebase [S]tart'})
+      vim.keymap.set('n', '<leader>gRc', '<Cmd>Git rebase --continue<CR>', { desc = '[G]it [R]ebase [C]ontinue' })
+      vim.keymap.set('n', '<leader>gRa', '<Cmd>Git rebase --abort<CR>', { desc = '[G]it [R]ebase [A]bort' })
     end,
   },
   {
