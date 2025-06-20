@@ -1,6 +1,7 @@
 return {
   {
     'feakuru/mypy.nvim',
+    -- dir = "~/projects/public/mypy.nvim/",
     config = function()
       local mypy = require 'mypy'
       mypy.setup()
