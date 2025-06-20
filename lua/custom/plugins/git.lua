@@ -76,10 +76,32 @@ return {
         end
       end, { desc = '[G]it [W]hodunit (Blame)' })
 
-      -- quickly merge in main
-      -- TODO: add check for the branch name `master`
+      local ts_builtin = require 'telescope.builtin'
+      local ts_actions = require 'telescope.actions'
+      local ts_actions_state = require 'telescope.actions.state'
+
+      local function select_git_branch(options, callback)
+        ts_builtin.git_branches {
+          prompt_title = options.prompt,
+          default_text = options.default,
+          attach_mappings = function(_, map)
+            map('i', '<CR>', function(prompt_bufnr)
+              local selection = ts_actions_state.get_selected_entry()
+              ts_actions.close(prompt_bufnr)
+              callback(selection.value)
+            end)
+            map('n', '<CR>', function(prompt_bufnr)
+              local selection = ts_actions_state.get_selected_entry()
+              ts_actions.close(prompt_bufnr)
+              callback(selection.value)
+            end)
+            return true
+          end,
+        }
+      end
+
       vim.keymap.set('n', '<leader>gM', function()
-        vim.ui.input({ prompt = 'Branch to merge in:', default = 'develop' }, function(branch_name)
+        select_git_branch({ prompt = 'Branch to merge in:', default = 'develop' }, function(branch_name)
           local commands = {
             'pull',
             'merge ' .. branch_name,
@@ -93,7 +115,7 @@ return {
       end, { desc = '[G]it pull and [M]erge' })
 
       vim.keymap.set('n', '<leader>gRs', function()
-        vim.ui.input({ prompt = 'Branch to rebase onto:', default = 'origin/develop' }, function(branch_name)
+        select_git_branch({ prompt = 'Branch to rebase onto:', default = 'origin/develop' }, function(branch_name)
           local commands = {
             'pull',
             'rebase ' .. branch_name,
@@ -104,7 +126,7 @@ return {
             end
           end
         end)
-      end, {desc = '[G]it [R]ebase [S]tart'})
+      end, { desc = '[G]it [R]ebase [S]tart' })
       vim.keymap.set('n', '<leader>gRc', '<Cmd>Git rebase --continue<CR>', { desc = '[G]it [R]ebase [C]ontinue' })
       vim.keymap.set('n', '<leader>gRa', '<Cmd>Git rebase --abort<CR>', { desc = '[G]it [R]ebase [A]bort' })
     end,
