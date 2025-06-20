@@ -79,18 +79,32 @@ return {
       -- quickly merge in main
       -- TODO: add check for the branch name `master`
       vim.keymap.set('n', '<leader>gM', function()
-        local commands = {
-          'checkout main',
-          'pull',
-          'checkout -',
-          'merge main',
-        }
-        for _, command in ipairs(commands) do
-          if not wrap_git_cmd(command) then
-            return
+        vim.ui.input({ prompt = 'Branch to merge in:', default = 'develop' }, function(branch_name)
+          local commands = {
+            'pull',
+            'merge ' .. branch_name,
+          }
+          for _, command in ipairs(commands) do
+            if not wrap_git_cmd(command) then
+              return
+            end
           end
-        end
-      end, { desc = '[G]it merge in [M]ain branch' })
+        end)
+      end, { desc = '[G]it: pull and [M]erge a branch' })
+
+      vim.keymap.set('n', '<leader>gR', function()
+        vim.ui.input({ prompt = 'Branch to rebase onto:', default = 'origin/develop' }, function(branch_name)
+          local commands = {
+            'pull',
+            'rebase ' .. branch_name,
+          }
+          for _, command in ipairs(commands) do
+            if not wrap_git_cmd(command) then
+              return
+            end
+          end
+        end)
+      end)
     end,
   },
   {
