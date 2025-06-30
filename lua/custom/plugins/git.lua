@@ -27,7 +27,9 @@ local function do_custom_commit(prefix)
       prefix = string.format('%s: ', prefix)
     end
   elseif not prefix or prefix == '' then
-    prefix = string.format('%s: ', ticket)
+    prefix = string.format('[%s] ', ticket)
+  else
+    prefix = string.format('[%s] %s: ', ticket, prefix)
   end
 
   -- TODO: this starts inserting even if commit command failed,
