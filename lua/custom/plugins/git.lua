@@ -146,4 +146,5 @@ return {
       'nvim-telescope/telescope.nvim', -- optional
     },
   },
+  { 'akinsho/git-conflict.nvim', version = '*', config = true },
 }
