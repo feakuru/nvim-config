@@ -146,5 +146,17 @@ return {
       'nvim-telescope/telescope.nvim', -- optional
     },
   },
-  { 'akinsho/git-conflict.nvim', version = '*', config = true },
+  {
+    'akinsho/git-conflict.nvim',
+    version = '*',
+    config = function()
+      require('git-conflict').setup {
+        default_mappings = false,
+      }
+      vim.keymap.set('n', '<leader>gCo', '<Cmd>GitConflictChooseOurs<CR>', {desc = '[O]urs'})
+      vim.keymap.set('n', '<leader>gCt', '<Cmd>GitConflictChooseTheirs<CR>', {desc = '[T]heirs'})
+      vim.keymap.set('n', '<leader>gCb', '<Cmd>GitConflictChooseBoth<CR>', {desc = '[B]oth'})
+      vim.keymap.set('n', '<leader>gCn', '<Cmd>GitConflictChooseNone<CR>', {desc = '[N]one'})
+    end,
+  },
 }

@@ -457,6 +457,8 @@ require('lazy').setup({
         { '<leader>g', group = '[G]it' },
         { '<leader>gc', group = '[G]it [C]ommit' },
         { '<leader>gR', group = '[G]it [R]ebase' },
+        { '<leader>gS', group = '[G]it [S]tage' },
+        { '<leader>gC', group = '[G]it: resolve [C]onflict' },
         { '<leader>ih', group = '[I]nlay [H]ints' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>y', group = '[Y]azi' },
