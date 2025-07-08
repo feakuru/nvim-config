@@ -153,10 +153,10 @@ return {
       require('git-conflict').setup {
         default_mappings = false,
       }
-      vim.keymap.set('n', '<leader>gCo', '<Cmd>GitConflictChooseOurs<CR>', {desc = '[O]urs'})
-      vim.keymap.set('n', '<leader>gCt', '<Cmd>GitConflictChooseTheirs<CR>', {desc = '[T]heirs'})
-      vim.keymap.set('n', '<leader>gCb', '<Cmd>GitConflictChooseBoth<CR>', {desc = '[B]oth'})
-      vim.keymap.set('n', '<leader>gCn', '<Cmd>GitConflictChooseNone<CR>', {desc = '[N]one'})
+      vim.keymap.set('n', '<leader>ro', '<Cmd>GitConflictChooseOurs<CR>', {desc = '[O]urs'})
+      vim.keymap.set('n', '<leader>rt', '<Cmd>GitConflictChooseTheirs<CR>', {desc = '[T]heirs'})
+      vim.keymap.set('n', '<leader>rb', '<Cmd>GitConflictChooseBoth<CR>', {desc = '[B]oth'})
+      vim.keymap.set('n', '<leader>rn', '<Cmd>GitConflictChooseNone<CR>', {desc = '[N]one'})
     end,
   },
 }
