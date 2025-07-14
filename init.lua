@@ -290,6 +290,7 @@ require('lazy').setup({
     'NMAC427/guess-indent.nvim',
     config = function()
       require('guess-indent').setup {}
+      vim.keymap.set('n', '<leader>pp', '<Cmd>Lazy<CR>', { desc = '[P]lugins (Lazy)' })
     end,
   },
 
@@ -449,21 +450,23 @@ require('lazy').setup({
 
       -- Document existing key chains
       wk.add {
+        { '<leader>a', group = '[A]vante' },
         { '<leader>d', group = '[D]: Debug/Devcontainers/Delete' },
-        { '<leader>s', group = '[S]earch' },
-        { '<leader>w', group = '[W]indow' },
-        { '<leader>t', group = '[T]: Toggle/Tests' },
-        { '<leader>q', group = '[Q]uickfix' },
-        { '<leader>r', group = 'Git: [R]esolve [C]onflict' },
         { '<leader>g', group = '[G]it' },
         { '<leader>gc', group = '[G]it [C]ommit' },
         { '<leader>gR', group = '[G]it [R]ebase' },
         { '<leader>gS', group = '[G]it [S]tage' },
-        { '<leader>ih', group = '[I]nlay [H]ints' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-        { '<leader>y', group = '[Y]azi' },
+        { '<leader>ih', group = '[I]nlay [H]ints' },
         { '<leader>l', group = '[L]SP' },
         { '<leader>ls', group = '[L]SP [S]ymbols' },
+        { '<leader>q', group = '[Q]uickfix' },
+        { '<leader>p', group = '[P]lugins (Lazy)' },
+        { '<leader>r', group = 'Git [R]esolve' },
+        { '<leader>s', group = '[S]earch' },
+        { '<leader>t', group = '[T]: Toggle/Tests' },
+        { '<leader>w', group = '[W]indow' },
+        { '<leader>y', group = '[Y]azi' },
       }
     end,
   },
