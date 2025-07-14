@@ -2,11 +2,11 @@ return {
   {
     'rcarriga/nvim-notify',
     config = {
-      fps = 60,
+      fps = 100,
       level = 1,
       render = 'compact',
       stages = 'fade',
-      timeout = 2500,
+      timeout = 2000,
     },
   },
   {
