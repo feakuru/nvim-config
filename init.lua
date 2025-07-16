@@ -200,17 +200,27 @@ end, { desc = '[E]rrors and diagnostics' })
 
 vim.keymap.set('n', '<leader>qt', '<Cmd>Telescope quickfix<CR>', { desc = 'View [Q]uickfixes in [T]elescope' })
 vim.keymap.set('n', '[q', function()
-  require('trouble').prev {
-    skip_groups = true,
-    jump = true,
-  }
-end, { desc = 'Previous quickfix' })
+  local trouble = require 'trouble'
+  if trouble.is_open() then
+    trouble.prev {
+      skip_groups = true,
+      jump = true,
+    }
+  else
+    vim.cmd 'cprevious'
+  end
+end, { desc = 'Previous quickfix/Trouble item' })
 vim.keymap.set('n', ']q', function()
-  require('trouble').next {
-    skip_groups = true,
-    jump = true,
-  }
-end, { desc = 'Next quickfix' })
+  local trouble = require 'trouble'
+  if trouble.is_open() then
+    trouble.next {
+      skip_groups = true,
+      jump = true,
+    }
+  else
+    vim.cmd 'cnext'
+  end
+end, { desc = 'Next quickfix/Trouble item' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which

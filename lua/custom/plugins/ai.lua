@@ -13,9 +13,6 @@ return {
           model = 'qwen3:8b',
           extra_request_body = {
             repeat_penalty = 1.1,
-            temperature = 0.2,
-            top_p = 0.95,
-            top_k = 40,
           },
         },
       },
