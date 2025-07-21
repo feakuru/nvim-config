@@ -17,9 +17,6 @@ return {
         },
       },
     },
-    keys = {
-      { '<leader>aS', '<Cmd>AvanteSwitchProvider<CR>', desc = 'avante: switch provider' },
-    },
     dependences = {
       'nvim-lua/plenary.nvim',
       'MunifTanjim/nui.nvim',
