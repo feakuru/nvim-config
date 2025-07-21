@@ -6,7 +6,7 @@ return {
     ---@module 'avante'
     ---@type avante.Config
     opts = {
-      provider = 'ollama',
+      provider = 'copilot',
       providers = {
         ollama = {
           endpoint = 'http://localhost:11434',
@@ -16,6 +16,9 @@ return {
           },
         },
       },
+    },
+    keys = {
+      { '<leader>aS', '<Cmd>AvanteSwitchProvider<CR>', desc = 'avante: switch provider' },
     },
     dependences = {
       'nvim-lua/plenary.nvim',

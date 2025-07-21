@@ -32,7 +32,7 @@ return {
       'rcarriga/nvim-notify',
     },
     keys = {
-      { '<leader>n', '<Cmd>Telescope notify<CR>', { desc = 'Telescope: [N]otifications' } },
+      { '<leader>n', mode = { 'n' }, '<Cmd>Telescope notify<CR>', desc = 'Telescope: [N]otifications' },
     },
   },
 }
