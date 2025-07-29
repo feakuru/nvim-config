@@ -937,6 +937,8 @@ require('lazy').setup({
           end,
         },
       }
+      -- Swift LSP - has to be enabled like this as it is not provided in Mason
+      vim.lsp.enable 'sourcekit'
     end,
   },
 
