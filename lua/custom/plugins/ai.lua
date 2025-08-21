@@ -17,14 +17,20 @@ return {
         },
       },
     },
-    dependences = {
+    dependencies = {
       'nvim-lua/plenary.nvim',
       'MunifTanjim/nui.nvim',
       --- The below dependencies are optional
       'nvim-telescope/telescope.nvim',
-      'hrsh7th/nvim-cmp',
       'stevearc/dressing.nvim',
       'nvim-tree/nvim-web-devicons',
+      {
+        'github/copilot.lua',
+        config = function()
+          require('copilot').setup {}
+        end,
+      },
+      'zbirenbaum/copilot.lua',
     },
   },
 }
