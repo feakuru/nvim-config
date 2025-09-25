@@ -20,24 +20,24 @@ local function do_custom_commit(prefix)
     return
   end
 
-  local branch = vim.fn.system "git branch --show-current | tr -d '\n'"
-  local ticket = branch:match '([A-Z]+%-%d+)'
-  if not ticket or ticket == '' then
-    if prefix and #prefix > 0 then
-      prefix = string.format('%s: ', prefix)
-    end
-  elseif not prefix or prefix == '' then
-    prefix = string.format('[%s] ', ticket)
-  else
-    prefix = string.format('[%s] %s: ', ticket, prefix)
-  end
-
-  -- TODO: this starts inserting even if commit command failed,
-  -- the `ok` above is clearly not enough (re: nothing to commit)
-  vim.cmd 'startinsert'
-  if prefix and #prefix > 0 then
-    vim.api.nvim_put({ prefix }, 'c', true, true)
-  end
+  -- local branch = vim.fn.system "git branch --show-current | tr -d '\n'"
+  -- local ticket = branch:match '([A-Z]+%-%d+)'
+  -- if not ticket or ticket == '' then
+  --   if prefix and #prefix > 0 then
+  --     prefix = string.format('%s: ', prefix)
+  --   end
+  -- elseif not prefix or prefix == '' then
+  --   prefix = string.format('[%s] ', ticket)
+  -- else
+  --   prefix = string.format('[%s] %s: ', ticket, prefix)
+  -- end
+  --
+  -- -- TODO: this starts inserting even if commit command failed,
+  -- -- the `ok` above is clearly not enough (re: nothing to commit)
+  -- vim.cmd 'startinsert'
+  -- if prefix and #prefix > 0 then
+  --   vim.api.nvim_put({ prefix }, 'c', true, true)
+  -- end
 end
 
 return {
