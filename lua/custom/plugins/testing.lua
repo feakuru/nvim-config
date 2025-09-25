@@ -7,6 +7,7 @@ return {
       'antoinemadec/FixCursorHold.nvim',
       'nvim-treesitter/nvim-treesitter',
       'nvim-neotest/neotest-python',
+      'rouge8/neotest-rust',
     },
     config = function()
       require('neotest').setup {
@@ -16,6 +17,9 @@ return {
             args = { '-vv' },
             -- an experimental option that made my pc overheat when debugging tests:
             -- pytest_discover_instances = true,
+          },
+          require 'neotest-rust' {
+            args = { '--no-capture' },
           },
         },
       }
