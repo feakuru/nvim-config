@@ -65,6 +65,138 @@ return {
       dap.listeners.before.event_exited.dapui_config = function()
         dapui.close()
       end
+
+      -- Debug adapters
+      dap.adapters.gdb = {
+        type = 'executable',
+        command = 'gdb',
+        args = { '--interpreter=dap', '--eval-command', 'set print pretty on' },
+      }
+      dap.adapters['rust-gdb'] = {
+        type = 'executable',
+        command = 'rust-gdb',
+        args = { '--interpreter=dap', '--eval-command', 'set print pretty on' },
+      }
+
+      -- Debug configurations
+      -- C and C++
+      dap.configurations.c = {
+        {
+          name = 'Launch',
+          type = 'gdb',
+          request = 'launch',
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          args = {}, -- provide arguments if needed
+          cwd = '${workspaceFolder}',
+          stopAtBeginningOfMainSubprogram = false,
+          setupCommands = {
+            {
+              text = '-enable-pretty-printing',
+              description = 'enable pretty printing',
+              ignoreFailures = false,
+            },
+          },
+        },
+        {
+          name = 'Select and attach to process',
+          type = 'gdb',
+          request = 'attach',
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          pid = function()
+            local name = vim.fn.input 'Executable name (filter): '
+            return require('dap.utils').pick_process { filter = name }
+          end,
+          cwd = '${workspaceFolder}',
+          setupCommands = {
+            {
+              text = '-enable-pretty-printing',
+              description = 'enable pretty printing',
+              ignoreFailures = false,
+            },
+          },
+        },
+        {
+          name = 'Attach to gdbserver :1234',
+          type = 'gdb',
+          request = 'attach',
+          target = 'localhost:1234',
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = '${workspaceFolder}',
+          setupCommands = {
+            {
+              text = '-enable-pretty-printing',
+              description = 'enable pretty printing',
+              ignoreFailures = false,
+            },
+          },
+        },
+      }
+      dap.configurations.cpp = dap.configurations.c
+
+      -- Rust
+      dap.configurations.rust = {
+        {
+          name = 'Launch',
+          type = 'rust-gdb',
+          request = 'launch',
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          args = {}, -- provide arguments if needed
+          cwd = '${workspaceFolder}',
+          stopAtBeginningOfMainSubprogram = false,
+          setupCommands = {
+            {
+              text = '-enable-pretty-printing',
+              description = 'enable pretty printing',
+              ignoreFailures = false,
+            },
+          },
+        },
+        {
+          name = 'Select and attach to process',
+          type = 'rust-gdb',
+          request = 'attach',
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          pid = function()
+            local name = vim.fn.input 'Executable name (filter): '
+            return require('dap.utils').pick_process { filter = name }
+          end,
+          cwd = '${workspaceFolder}',
+          setupCommands = {
+            {
+              text = '-enable-pretty-printing',
+              description = 'enable pretty printing',
+              ignoreFailures = false,
+            },
+          },
+        },
+        {
+          name = 'Attach to gdbserver :1234',
+          type = 'rust-gdb',
+          request = 'attach',
+          target = 'localhost:1234',
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = '${workspaceFolder}',
+          setupCommands = {
+            {
+              text = '-enable-pretty-printing',
+              description = 'enable pretty printing',
+              ignoreFailures = false,
+            },
+          },
+        },
+      }
     end,
   },
 }

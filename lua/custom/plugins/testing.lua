@@ -20,13 +20,14 @@ return {
           },
           require 'neotest-rust' {
             args = { '--no-capture' },
+            dap_adapter = 'gdb',
           },
         },
       }
       vim.keymap.set('n', '<leader>tn', function()
         require('neotest').run.run()
       end, { desc = '[T]ests: Run [N]earest' })
-      vim.keymap.set('n', '<leader>dn', function()
+      vim.keymap.set('n', '<leader>tdn', function()
         require('neotest').run.run { strategy = 'dap' }
       end, { desc = '[D]ebug [N]earest test' })
       vim.keymap.set('n', '<leader>tf', function()
