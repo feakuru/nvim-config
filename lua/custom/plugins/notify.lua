@@ -4,7 +4,7 @@ return {
     config = {
       fps = 100,
       level = 1,
-      render = 'compact',
+      -- render = 'compact',
       stages = 'fade',
       timeout = 2000,
     },
