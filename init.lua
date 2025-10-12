@@ -472,7 +472,7 @@ require('lazy').setup({
         { '<leader>g', group = '[G]it' },
         { '<leader>gc', group = '[G]it [C]ommit' },
         { '<leader>gR', group = '[G]it [R]ebase' },
-        { '<leader>gS', group = '[G]it [S]tage' },
+        { '<leader>gS', group = '[G]it [S]tash' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>ih', group = '[I]nlay [H]ints' },
         { '<leader>l', group = '[L]SP' },
@@ -872,6 +872,9 @@ require('lazy').setup({
           },
         },
         rust_analyzer = {},
+        qmlls = {
+          cmd = { 'qmlls6' },
+        },
         zls = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --

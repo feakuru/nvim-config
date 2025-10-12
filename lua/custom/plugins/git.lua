@@ -15,29 +15,17 @@ local function do_custom_commit(prefix)
   if diff and #diff > 0 then
     cmd = 'commit'
   end
-  local ok, _ = wrap_git_cmd(cmd)
+  local ok = wrap_git_cmd(cmd)
   if not ok then
     return
   end
 
-  -- local branch = vim.fn.system "git branch --show-current | tr -d '\n'"
-  -- local ticket = branch:match '([A-Z]+%-%d+)'
-  -- if not ticket or ticket == '' then
-  --   if prefix and #prefix > 0 then
-  --     prefix = string.format('%s: ', prefix)
-  --   end
-  -- elseif not prefix or prefix == '' then
-  --   prefix = string.format('[%s] ', ticket)
-  -- else
-  --   prefix = string.format('[%s] %s: ', ticket, prefix)
-  -- end
-  --
-  -- -- TODO: this starts inserting even if commit command failed,
-  -- -- the `ok` above is clearly not enough (re: nothing to commit)
-  -- vim.cmd 'startinsert'
-  -- if prefix and #prefix > 0 then
-  --   vim.api.nvim_put({ prefix }, 'c', true, true)
-  -- end
+  -- TODO: this starts inserting even if commit command failed,
+  -- the `ok` above is clearly not enough (re: nothing to commit)
+  vim.cmd 'startinsert!'
+  if prefix and #prefix > 0 then
+    vim.api.nvim_put({ prefix }, 'c', true, true)
+  end
 end
 
 return {
@@ -49,7 +37,7 @@ return {
       vim.keymap.set('n', '<leader>ga', '<Cmd>Git add -A<CR>', { desc = '[G]it [A]dd All' })
       vim.keymap.set('n', '<leader>gb', '<Cmd>Telescope git_branches<CR>', { desc = '[G]it [B]ranches' })
       vim.keymap.set('n', '<leader>gp', '<Cmd>Git push<CR>', { desc = '[G]it [P]ush' })
-      vim.keymap.set('n', '<leader>gf', '<Cmd>Git pull<CR>', { desc = '[G]it [F]pull' })
+      vim.keymap.set('n', '<leader>gf', '<Cmd>Git pull --all<CR>', { desc = '[G]it [F]pull' })
       vim.keymap.set('n', '<leader>gd', '<Cmd>Git diff<CR>', { desc = '[G]it [D]iff' })
       vim.keymap.set('n', '<leader>gl', '<Cmd>Git log<CR>', { desc = '[G]it [L]og' })
       vim.keymap.set('n', '<leader>gSs', '<Cmd>Git stash<CR>', { desc = '[G]it [S]tash' })
