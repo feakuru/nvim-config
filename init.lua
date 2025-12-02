@@ -274,6 +274,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.hl.on_yank()
   end,
 })
+vim.api.nvim_create_autocmd('TermOpen', {
+  desc = 'Automatically enter term mode in terminals',
+  group = vim.api.nvim_create_augroup('kickstart-autoenter-terminal', { clear = true }),
+  callback = function()
+    vim.cmd('startinsert')
+  end
+})
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
