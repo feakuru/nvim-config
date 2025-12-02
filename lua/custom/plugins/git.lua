@@ -1,5 +1,5 @@
 local function wrap_git_cmd(command)
-  local ok, err = pcall(vim.cmd, 'G ' .. command)
+  local ok, err = pcall(vim.cmd, 'horizontal terminal git ' .. command)
   if not ok then
     vim.health.warn(string.format("Could not %s: '%s'", command, err))
   end
@@ -7,24 +7,23 @@ local function wrap_git_cmd(command)
 end
 
 local function do_custom_commit(prefix)
-  -- only do `git commit -a` if we haven't specifically staged some files.
-  -- if this causes me to have to add everything sometimes: does remembering
-  -- about <leader>gaa help?
+  -- only do `git commit -a` if we haven't specifically staged some files
   local diff = vim.fn.system 'git diff --name-only --cached'
-  local cmd = 'commit -a'
+  local prompt = 'Commit message'
+  if prefix and #prefix > 0 then
+    prompt = prompt .. ' (' .. prefix .. '):'
+    prefix = prefix .. ': '
+  else
+    prompt = prompt .. ':'
+  end
+  local msg = vim.fn.input({prompt = prompt})
+  local cmd = 'commit -a -m "' .. prefix .. msg .. '"'
   if diff and #diff > 0 then
-    cmd = 'commit'
+    cmd = 'commit -m "' .. prefix .. msg .. '"'
   end
   local ok = wrap_git_cmd(cmd)
   if not ok then
     return
-  end
-
-  -- TODO: this starts inserting even if commit command failed,
-  -- the `ok` above is clearly not enough (re: nothing to commit)
-  vim.cmd 'startinsert!'
-  if prefix and #prefix > 0 then
-    vim.api.nvim_put({ prefix }, 'c', true, true)
   end
 end
 
