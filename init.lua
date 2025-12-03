@@ -93,6 +93,9 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- For Zig formatter
+vim.g.zig_fmt_autosave = false
+
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
@@ -172,7 +175,8 @@ vim.o.conceallevel = 1
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
-vim.g.zig_fmt_autosave = false
+vim.o.title = true
+vim.o.titlestring = [[v %F]]
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
