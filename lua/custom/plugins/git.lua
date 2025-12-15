@@ -17,6 +17,10 @@ local function do_custom_commit(prefix)
     prompt = prompt .. ':'
   end
   local msg = vim.fn.input({prompt = prompt})
+  if #msg <= 0 then
+    vim.notify("Empty commit message, aborting.", vim.log.levels.WARN)
+    return
+  end
   local cmd = 'commit -a -m "' .. prefix .. msg .. '"'
   if diff and #diff > 0 then
     cmd = 'commit -m "' .. prefix .. msg .. '"'
