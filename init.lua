@@ -195,6 +195,8 @@ vim.keymap.set("i", "<C-BS>", "<C-w>", { noremap = true })
 vim.keymap.set("i", "<C-Del>", "<C-o>dw", { noremap = true })
 vim.keymap.set("c", "<C-BS>", "<C-w>", { noremap = true })
 vim.keymap.set("c", "<C-Del>", "<C-right><C-w>", { noremap = true })
+vim.keymap.set("t", "<C-BS>", "<C-w>", { noremap = true })
+vim.keymap.set("t", "<C-Del>", "<M-d>", { noremap = true })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
