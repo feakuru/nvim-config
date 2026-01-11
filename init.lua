@@ -187,6 +187,15 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
 
+-- For terminal mode, I want only C-u, since C-d is useful for sending EOF
+vim.keymap.set('t', '<C-u>', [[<C-\><C-n><C-u>zz]], { desc = 'Scroll up' })
+
+-- QoL mappings for ctrl+bcksp and ctrl-del functionality in input and command mode
+vim.keymap.set("i", "<C-BS>", "<C-w>", { noremap = true })
+vim.keymap.set("i", "<C-Del>", "<C-o>dw", { noremap = true })
+vim.keymap.set("c", "<C-BS>", "<C-w>", { noremap = true })
+vim.keymap.set("c", "<C-Del>", "<C-right><C-w>", { noremap = true })
+
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')

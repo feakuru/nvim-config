@@ -16,9 +16,9 @@ local function do_custom_commit(prefix)
   else
     prompt = prompt .. ':'
   end
-  local msg = vim.fn.input({prompt = prompt})
+  local msg = vim.fn.input { prompt = prompt }
   if #msg <= 0 then
-    vim.notify("Empty commit message, aborting.", vim.log.levels.WARN)
+    vim.notify('Empty commit message, aborting.', vim.log.levels.WARN)
     return
   end
   local cmd = 'commit -a -m "' .. prefix .. msg .. '"'
@@ -39,8 +39,8 @@ return {
       vim.keymap.set('n', '<leader>gs', '<Cmd>Git<CR>', { desc = '[G]it [S]tatus' })
       vim.keymap.set('n', '<leader>ga', '<Cmd>Git add -A<CR>', { desc = '[G]it [A]dd All' })
       vim.keymap.set('n', '<leader>gb', '<Cmd>Telescope git_branches<CR>', { desc = '[G]it [B]ranches' })
-      vim.keymap.set('n', '<leader>gp', function ()
-        wrap_git_cmd('push')
+      vim.keymap.set('n', '<leader>gp', function()
+        wrap_git_cmd 'push'
       end, { desc = '[G]it [P]ush' })
       vim.keymap.set('n', '<leader>gf', '<Cmd>Git pull --all<CR>', { desc = '[G]it [F]pull' })
       vim.keymap.set('n', '<leader>gd', '<Cmd>Git diff<CR>', { desc = '[G]it [D]iff' })
@@ -102,14 +102,8 @@ return {
 
       vim.keymap.set('n', '<leader>gM', function()
         select_git_branch({ prompt = 'Branch to merge in:', default = 'develop' }, function(branch_name)
-          local commands = {
-            'pull',
-            'merge ' .. branch_name,
-          }
-          for _, command in ipairs(commands) do
-            if not wrap_git_cmd(command) then
-              return
-            end
+          if not wrap_git_cmd('merge ' .. branch_name) then
+            return
           end
         end)
       end, { desc = '[G]it pull and [M]erge' })
@@ -146,10 +140,10 @@ return {
       require('git-conflict').setup {
         default_mappings = false,
       }
-      vim.keymap.set('n', '<leader>ro', '<Cmd>GitConflictChooseOurs<CR>', {desc = '[O]urs'})
-      vim.keymap.set('n', '<leader>rt', '<Cmd>GitConflictChooseTheirs<CR>', {desc = '[T]heirs'})
-      vim.keymap.set('n', '<leader>rb', '<Cmd>GitConflictChooseBoth<CR>', {desc = '[B]oth'})
-      vim.keymap.set('n', '<leader>rn', '<Cmd>GitConflictChooseNone<CR>', {desc = '[N]one'})
+      vim.keymap.set('n', '<leader>ro', '<Cmd>GitConflictChooseOurs<CR>', { desc = '[O]urs' })
+      vim.keymap.set('n', '<leader>rt', '<Cmd>GitConflictChooseTheirs<CR>', { desc = '[T]heirs' })
+      vim.keymap.set('n', '<leader>rb', '<Cmd>GitConflictChooseBoth<CR>', { desc = '[B]oth' })
+      vim.keymap.set('n', '<leader>rn', '<Cmd>GitConflictChooseNone<CR>', { desc = '[N]one' })
     end,
   },
 }
