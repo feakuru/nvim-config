@@ -73,6 +73,14 @@ return {
         end
       end, { desc = '[G]it [W]hodunit (Blame)' })
 
+      -- Close fugitive status window with `q`
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'fugitive',
+        callback = function()
+          vim.keymap.set('n', 'q', '<Cmd>q<CR>', { buffer = true, desc = 'Close fugitive status' })
+        end,
+      })
+
       local ts_builtin = require 'telescope.builtin'
       local ts_actions = require 'telescope.actions'
       local ts_actions_state = require 'telescope.actions.state'
