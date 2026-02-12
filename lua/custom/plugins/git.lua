@@ -75,7 +75,7 @@ return {
 
       -- Close fugitive status window with `q`
       vim.api.nvim_create_autocmd('FileType', {
-        pattern = 'fugitive',
+        pattern = {'fugitive', 'fugitiveblame'},
         callback = function()
           vim.keymap.set('n', 'q', '<Cmd>q<CR>', { buffer = true, desc = 'Close fugitive status' })
         end,
