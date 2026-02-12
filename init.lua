@@ -289,11 +289,14 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.hl.on_yank()
   end,
 })
-vim.api.nvim_create_autocmd('TermOpen', {
+vim.api.nvim_create_autocmd({'WinEnter', 'TermOpen'}, {
   desc = 'Automatically enter term mode in terminals',
+  pattern = {'term://*'},
   group = vim.api.nvim_create_augroup('kickstart-autoenter-terminal', { clear = true }),
-  callback = function()
-    vim.cmd('startinsert')
+  callback = function(args)
+    if vim.api.nvim_get_current_buf() == args.buf then
+      vim.cmd("startinsert")
+    end
   end
 })
 
@@ -895,7 +898,7 @@ require('lazy').setup({
         },
         rust_analyzer = {},
         qmlls = {
-          cmd = { 'qmlls6' },
+          cmd = { 'qmlls6', '-E' },
         },
         zls = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
