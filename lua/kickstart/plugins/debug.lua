@@ -13,6 +13,7 @@ vim.pack.add {
   'https://github.com/mason-org/mason.nvim',
   'https://github.com/jay-babu/mason-nvim-dap.nvim',
   'https://github.com/leoluz/nvim-dap-go',
+  'https://github.com/mfussenegger/nvim-dap-python',
 }
 
 -- Basic debugging keymaps, feel free to change to your liking!
@@ -73,7 +74,7 @@ dapui.setup {
 -- vim.api.nvim_set_hl(0, 'DapBreak', { fg = '#e51400' })
 -- vim.api.nvim_set_hl(0, 'DapStop', { fg = '#ffcc00' })
 -- local breakpoint_icons = vim.g.have_nerd_font
---     and { Breakpoint = '', BreakpointCondition = '', BreakpointRejected = '', LogPoint = '', Stopped = '' }
+--     and { Breakpoint = '', BreakpointCondition = '', BreakpointRejected = '', LogPoint = '', Stopped = '' }
 --   or { Breakpoint = '●', BreakpointCondition = '⊜', BreakpointRejected = '⊘', LogPoint = '◆', Stopped = '⭔' }
 -- for type, icon in pairs(breakpoint_icons) do
 --   local tp = 'Dap' .. type
@@ -93,3 +94,6 @@ require('dap-go').setup {
     detached = vim.fn.has 'win32' == 0,
   },
 }
+
+-- Install python specific config
+require('dap-python').setup 'uv'
