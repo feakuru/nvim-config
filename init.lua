@@ -864,7 +864,14 @@ do
           analysis = {
             diagnosticMode = 'openFilesOnly',
             typeCheckingMode = 'off',
-            logLevel = 'Error',
+            diagnosticSeverityOverrides = {
+              reportUnusedImport = 'warning',
+              reportUnusedVariable = 'info',
+              reportUnusedParameter = 'info',
+              reportMissingTypeStubs = 'none',
+              reportUnknownVariableType = 'none',
+              reportUnannotatedClassAttribute = 'none',
+            },
           },
         },
       },
