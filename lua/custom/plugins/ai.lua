@@ -1,24 +1,23 @@
-vim.pack.add {
-  'https://github.com/yetone/avante.nvim',
-  'https://github.com/nvim-lua/plenary.nvim',
-  'https://github.com/MunifTanjim/nui.nvim',
-  --- The below dependencies are optional
-  'https://github.com/nvim-telescope/telescope.nvim',
-  'https://github.com/stevearc/dressing.nvim',
-  'https://github.com/nvim-tree/nvim-web-devicons',
+vim.pack.add { { src = 'https://github.com/nickjvandyke/opencode.nvim', version = vim.version.range '*' } }
+
+---@type opencode.Opts
+vim.g.opencode_opts = {
+  -- Your configuration, if any; goto definition on the type for details
 }
 
----@module 'avante'
----@type avante.Config
-require('avante').setup {
-  provider = 'copilot',
-  providers = {
-    ollama = {
-      endpoint = 'http://localhost:11434',
-      model = 'qwen3:8b',
-      extra_request_body = {
-        repeat_penalty = 1.1,
-      },
-    },
-  },
-}
+vim.keymap.set({ 'n', 'x' }, '<leader>oa', function() require('opencode').ask '@this: ' end, { desc = 'Ask OpenCode…' })
+vim.keymap.set({ 'n', 'x' }, '<leader>os', function() require('opencode').select() end, { desc = 'Select OpenCode…' })
+vim.keymap.set(
+  { 'n', 'x' },
+  '<leader>or',
+  function() return require('opencode').operator '@this ' end,
+  { desc = 'Append range to OpenCode', expr = true }
+)
+vim.keymap.set(
+  { 'n' },
+  '<leader>ol',
+  function() return require('opencode').operator '@this ' .. '_' end,
+  { desc = 'Append line to OpenCode', expr = true }
+)
+vim.keymap.set({ 'n' }, '<S-C-u>', function() require('opencode').command 'session.half.page.up' end, { desc = 'Scroll OpenCode up' })
+vim.keymap.set({ 'n' }, '<S-C-d>', function() require('opencode').command 'session.half.page.down' end, { desc = 'Scroll OpenCode down' })

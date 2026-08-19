@@ -422,6 +422,7 @@ do
       { '<leader>ih', group = '[I]nlay [H]ints' },
       { '<leader>l', group = '[L]SP' },
       { '<leader>ls', group = '[L]SP [S]ymbols' },
+      { '<leader>o', group = '[O]pencode' },
       { '<leader>p', group = '[P]lugins' },
       { '<leader>q', group = '[Q]uickfix' },
       { '<leader>r', group = 'Git [R]esolve' },
