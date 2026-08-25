@@ -630,6 +630,11 @@ do
   -- NOTE: You can install multiple plugins at once
   vim.pack.add(telescope_plugins)
 
+  -- Cache/vendor/build directories to keep out of both file search and grep.
+  -- NOTE: Hidden files/dotfiles are intentionally still searched (via `--hidden`
+  -- below); only these specific noisy directories are excluded.
+  local search_ignore_glob = '!**/{.git,.mypy_cache,.ropeproject,__pycache__,.venv,target,.zig-cache,.build}/*'
+
   -- See `:help telescope` and `:help telescope.setup()`
   require('telescope').setup {
     -- You can put your default mappings / updates / etc. in here
@@ -645,7 +650,7 @@ do
           '--files',
           '--hidden',
           '--glob',
-          '!**/{.git,.mypy_cache,.ropeproject,__pycache__,.venv,target,.zig-cache,.build}/*',
+          search_ignore_glob,
           '--unrestricted',
         },
       },
@@ -654,6 +659,21 @@ do
       ['ui-select'] = { require('telescope.themes').get_dropdown() },
     },
     defaults = {
+      -- Applies to live_grep, grep_string, live_grep_args, etc.
+      -- Same as Telescope's built-in default, plus `--hidden` (so dotfiles are
+      -- searched) and a glob to keep cache/vendor/build directories out.
+      vimgrep_arguments = {
+        'rg',
+        '--color=never',
+        '--no-heading',
+        '--with-filename',
+        '--line-number',
+        '--column',
+        '--smart-case',
+        '--hidden',
+        '--glob',
+        search_ignore_glob,
+      },
       layout_config = {
         horizontal = {
           preview_width = 0.6,
