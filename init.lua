@@ -986,6 +986,10 @@ do
     vim.lsp.config(name, server)
     vim.lsp.enable(name)
   end
+
+  -- Typescript plugin
+  vim.pack.add { gh 'pmizio/typescript-tools.nvim' }
+  require('typescript-tools').setup {}
 end
 
 -- ============================================================
