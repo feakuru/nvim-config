@@ -273,6 +273,63 @@ do
   vim.keymap.set('n', '<leader>crc', '<Cmd>tab term cargo run<CR>', { desc = '[C]ommand [R]un [C]argo run' })
   vim.keymap.set('n', '<leader>crt', '<Cmd>tab term uv run pytest<CR>', { desc = '[C]ommand [R]un py[T]est' })
 
+  -- [[ Working directory history ]]
+  -- Plugins (sessions, file trees, ...) can move the cwd out from under you, sometimes
+  -- without an obvious way back. Keep a bounded, most-recent-first history so there always is one.
+  do
+    local history = { assert(vim.uv.cwd()) }
+    local max_entries = 20
+
+    local function record(dir)
+      if not dir or dir == history[1] then return end
+      for i, entry in ipairs(history) do
+        if entry == dir then
+          table.remove(history, i)
+          break
+        end
+      end
+      table.insert(history, 1, dir)
+      while #history > max_entries do
+        table.remove(history)
+      end
+    end
+
+    vim.api.nvim_create_autocmd('DirChanged', {
+      desc = 'Record working directory history',
+      pattern = '*',
+      group = vim.api.nvim_create_augroup('custom-cwd-history', { clear = true }),
+      callback = function() record(vim.fn.getcwd()) end,
+    })
+
+    --- Change directory globally. `:cd` also clears any window/tab-local dir that would shadow it.
+    local function goto_dir(dir)
+      vim.cmd('cd ' .. vim.fn.fnameescape(dir))
+      vim.notify('cwd: ' .. vim.fn.fnamemodify(dir, ':~'))
+    end
+
+    vim.keymap.set('n', '<leader>cdd', function()
+      local previous = history[2]
+      if not previous then
+        vim.notify('No previous working directory.', vim.log.levels.WARN)
+        return
+      end
+      goto_dir(previous)
+    end, { desc = '[C]hange [D]irectory: back to previous' })
+
+    vim.keymap.set('n', '<leader>cdl', function()
+      if #history < 2 then
+        vim.notify('No working directory history yet.', vim.log.levels.WARN)
+        return
+      end
+      vim.ui.select(vim.list_slice(history, 2), {
+        prompt = 'Change working directory to:',
+        format_item = function(dir) return vim.fn.fnamemodify(dir, ':~') end,
+      }, function(choice)
+        if choice then goto_dir(choice) end
+      end)
+    end, { desc = '[C]hange [D]irectory: from [L]ist' })
+  end
+
   -- [[ Basic Autocommands ]]
   --  See `:help lua-guide-autocommands`
 
@@ -413,6 +470,9 @@ do
     -- Existing key chains
     spec = {
       { '<leader>a', group = '[A]vante' },
+      { '<leader>c', group = '[C]ommands & [C]wd' },
+      { '<leader>cd', group = '[C]hange [D]irectory' },
+      { '<leader>cr', group = '[C]ommand [R]un' },
       { '<leader>d', group = '[D]: Debug/Delete' },
       { '<leader>g', group = '[G]it' },
       { '<leader>gc', group = '[G]it [C]ommit' },
@@ -872,6 +932,82 @@ do
     end,
   })
 
+  -- Loaded up here rather than next to the mason setup below because the `servers` table
+  -- reads `vim.lsp.config`, which only resolves once nvim-lspconfig is on the runtimepath.
+  vim.pack.add {
+    gh 'neovim/nvim-lspconfig',
+    gh 'mason-org/mason.nvim',
+    gh 'mason-org/mason-lspconfig.nvim',
+    gh 'WhoIsSethDaniel/mason-tool-installer.nvim',
+  }
+
+  -- [[ lspmux ]]
+  -- https://codeberg.org/p2502/lspmux
+  --
+  -- Instead of nvim spawning (and killing) a language server per session, connect to a
+  -- multiplexer that owns long-lived servers keyed by workspace. Closing nvim drops the
+  -- client but leaves the server warm, so reopening the project skips re-indexing.
+  local lspmux_host, lspmux_port = '127.0.0.1', 27631
+
+  --- Is something accepting connections on the lspmux socket?
+  ---@param timeout_ms integer
+  ---@return boolean
+  local function lspmux_up(timeout_ms)
+    local tcp = assert(vim.uv.new_tcp())
+    local connected = nil ---@type boolean?
+    tcp:connect(lspmux_host, lspmux_port, function(err)
+      connected = err == nil
+      tcp:close()
+    end)
+    vim.wait(timeout_ms, function() return connected ~= nil end, 5)
+    if connected == nil then
+      pcall(function() tcp:close() end)
+      return false
+    end
+    return connected
+  end
+
+  --- Bring the mux up if it isn't already, so a stopped unit doesn't cost you an LSP.
+  ---@return boolean
+  local function ensure_lspmux()
+    if lspmux_up(100) then return true end
+    vim.system({ 'systemctl', '--user', 'start', 'lspmux.service' }):wait(5000)
+    local ok = vim.wait(5000, function() return lspmux_up(50) end, 100)
+    return ok
+  end
+
+  --- Build a `vim.lsp.Config` fragment that routes `server` through lspmux.
+  ---@param name string `vim.lsp.config` name, used to chain the distributed default config.
+  ---@param server string Binary name, resolved in the *lspmux service's* PATH.
+  ---@param args string[]? Arguments for the language server.
+  ---@return vim.lsp.Config
+  local function via_lspmux(name, server, args)
+    -- Indexing `vim.lsp.config` resolves the `lsp/<name>.lua` shipped by nvim-lspconfig.
+    -- Its `rust_analyzer.before_init` *replaces* `initializationOptions` wholesale with
+    -- `settings['rust-analyzer']`, so `init_options` alone gets silently discarded and
+    -- lspMux has to be injected afterwards. Chain rather than clobber: that hook also
+    -- registers the `rust-analyzer.runSingle` code lens command.
+    local inherited_before_init = (vim.lsp.config[name] or {}).before_init
+
+    return {
+      cmd = function(dispatchers, config)
+        config.lspmux = ensure_lspmux()
+        if config.lspmux then return vim.lsp.rpc.connect(lspmux_host, lspmux_port)(dispatchers) end
+
+        vim.notify(('lspmux is unreachable, running %s directly'):format(server), vim.log.levels.WARN)
+        return vim.lsp.rpc.start(vim.list_extend({ server }, args or {}), dispatchers)
+      end,
+
+      before_init = function(params, config)
+        if inherited_before_init then inherited_before_init(params, config) end
+        if not config.lspmux then return end
+        params.initializationOptions = vim.tbl_deep_extend('force', params.initializationOptions or {}, {
+          lspMux = { version = '1', method = 'connect', server = server, args = args or {} },
+        })
+      end,
+    }
+  end
+
   -- Enable the following language servers
   --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
   --  See `:help lsp-config` for information about keys and how to configure
@@ -905,7 +1041,14 @@ do
         },
       },
     },
-    rust_analyzer = {},
+    -- rust-analyzer does not run as a child of nvim. It is owned by `lspmux`, a
+    -- multiplexer running as the `lspmux.service` systemd user unit, which keeps one
+    -- warm, already-indexed server per cargo workspace alive across nvim restarts.
+    --   systemctl --user status lspmux    -- is it up?
+    --   lspmux status                     -- live instances, clients, idle time
+    --   lspmux reload                     -- rust-analyzer/reloadWorkspace
+    -- Idle timeout lives in ~/.config/lspmux/config.toml.
+    rust_analyzer = via_lspmux('rust_analyzer', 'rust-analyzer'),
     qmlls = {
       cmd = { 'qmlls6', '-E' },
     },
@@ -950,13 +1093,6 @@ do
         },
       },
     },
-  }
-
-  vim.pack.add {
-    gh 'neovim/nvim-lspconfig',
-    gh 'mason-org/mason.nvim',
-    gh 'mason-org/mason-lspconfig.nvim',
-    gh 'WhoIsSethDaniel/mason-tool-installer.nvim',
   }
 
   -- Automatically install LSPs and related tools to stdpath for Neovim
@@ -1207,6 +1343,43 @@ do
 end
 
 vim.keymap.set('n', '<leader>pp', function() vim.pack.update() end, { desc = '[P]lugins: check for u[p]dates' })
+
+-- Dropping a `vim.pack.add()` call leaves the plugin installed: it stays on disk and in the
+-- lockfile forever, just never loaded. This collects everything nothing claims any more.
+-- Safe to run only because this config has no lazy-loading, so by the time a keymap can
+-- fire, every `vim.pack.add()` that will ever run has already run.
+vim.keymap.set('n', '<leader>pc', function()
+  local installed = vim.pack.get(nil, { info = false })
+
+  -- No separate sweep for directories missing from the lockfile is needed: `vim.pack.add()`
+  -- repairs the lockfile from whatever is on disk at startup, so an untracked plugin either
+  -- gets adopted into the lockfile (and shows up right here) or makes nvim fail to start
+  -- outright, which no keymap could help with anyway.
+  local orphans = {} ---@type string[]
+  for _, plugin in ipairs(installed) do
+    if not plugin.active then table.insert(orphans, plugin.spec.name) end
+  end
+  table.sort(orphans)
+
+  if #orphans == 0 then
+    vim.notify(('vim.pack: nothing to clean, all %d plugins are in use.'):format(#installed))
+    return
+  end
+
+  local pack_dir = installed[1] and vim.fs.dirname(installed[1].path) or '?'
+  local prompt = { ('Delete %d unused plugin(s) from %s?'):format(#orphans, vim.fn.fnamemodify(pack_dir, ':~')), '' }
+  for _, name in ipairs(orphans) do
+    table.insert(prompt, '  ' .. name)
+  end
+
+  if vim.fn.confirm(table.concat(prompt, '\n'), '&Delete\n&Cancel', 2) ~= 1 then
+    vim.notify 'vim.pack: clean cancelled.'
+    return
+  end
+
+  -- Removes the plugin directory and drops its lockfile entry.
+  vim.pack.del(orphans)
+end, { desc = '[P]lugins: [C]lean unused' })
 
 vim.api.nvim_create_user_command('LspInfo', function()
   local clients = vim.lsp.get_clients { bufnr = 0 }
