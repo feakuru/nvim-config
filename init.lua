@@ -693,7 +693,7 @@ do
   -- Cache/vendor/build directories to keep out of both file search and grep.
   -- NOTE: Hidden files/dotfiles are intentionally still searched (via `--hidden`
   -- below); only these specific noisy directories are excluded.
-  local search_ignore_glob = '!**/{.git,.mypy_cache,.ropeproject,__pycache__,.venv,target,.zig-cache,.build}/*'
+  local search_ignore_glob = '!**/{.git,.mypy_cache,.ropeproject,__pycache__,.venv,node_modules,target,.zig-cache,.build}/*'
 
   -- See `:help telescope` and `:help telescope.setup()`
   require('telescope').setup {
