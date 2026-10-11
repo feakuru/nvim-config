@@ -1,6 +1,6 @@
 vim.pack.add {
   'https://github.com/tpope/vim-fugitive',
-  'https://github.com/akinsho/git-conflict.nvim',
+  'https://github.com/niekdomi/conflict.nvim',
 }
 
 local function wrap_git_cmd(command)
@@ -111,10 +111,10 @@ end, { desc = '[G]it [R]ebase [S]tart' })
 vim.keymap.set('n', '<leader>gRc', '<Cmd>Git rebase --continue<CR>', { desc = '[G]it [R]ebase [C]ontinue' })
 vim.keymap.set('n', '<leader>gRa', '<Cmd>Git rebase --abort<CR>', { desc = '[G]it [R]ebase [A]bort' })
 
-require('git-conflict').setup {
+require('conflict').setup {
   default_mappings = false,
 }
-vim.keymap.set('n', '<leader>ro', '<Cmd>GitConflictChooseOurs<CR>', { desc = '[O]urs' })
-vim.keymap.set('n', '<leader>rt', '<Cmd>GitConflictChooseTheirs<CR>', { desc = '[T]heirs' })
-vim.keymap.set('n', '<leader>rb', '<Cmd>GitConflictChooseBoth<CR>', { desc = '[B]oth' })
-vim.keymap.set('n', '<leader>rn', '<Cmd>GitConflictChooseNone<CR>', { desc = '[N]one' })
+vim.keymap.set('n', '<leader>ro', '<Cmd>Conflict current<CR>', { desc = '[O]urs' })
+vim.keymap.set('n', '<leader>rt', '<Cmd>Conflict incoming<CR>', { desc = '[T]heirs' })
+vim.keymap.set('n', '<leader>rb', '<Cmd>Conflict both<CR>', { desc = '[B]oth' })
+vim.keymap.set('n', '<leader>rn', '<Cmd>Conflict none<CR>', { desc = '[N]one' })
