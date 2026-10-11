@@ -29,21 +29,28 @@ vim.keymap.set('n', '<F7>', function() require('dapui').toggle() end, { desc = '
 local dap = require 'dap'
 local dapui = require 'dapui'
 
+-- Debuggers to make available, as Mason package name -> binary it provides.
+-- Mason only installs the ones that aren't already on the system.
+local debuggers = {
+  delve = 'dlv',
+}
+
+local system_bin = require 'custom.system_bin'
+local ensure_installed = {}
+for pkg, bin in pairs(debuggers) do
+  if not system_bin.on_system(bin) then table.insert(ensure_installed, pkg) end
+end
+
 require('mason-nvim-dap').setup {
-  -- Makes a best effort to setup the various debuggers with
-  -- reasonable debug configurations
-  automatic_installation = true,
+  -- Disabled so Mason doesn't install debuggers behind the system's back;
+  -- everything wanted goes through `debuggers` above instead.
+  automatic_installation = false,
 
   -- You can provide additional configuration to the handlers,
   -- see mason-nvim-dap README for more information
   handlers = {},
 
-  -- You'll need to check that you have the required things installed
-  -- online, please don't ask me how to install them :)
-  ensure_installed = {
-    -- Update this to ensure that you have the debuggers for the langs you want
-    'delve',
-  },
+  ensure_installed = ensure_installed,
 }
 
 -- Dap UI setup
