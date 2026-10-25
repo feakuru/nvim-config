@@ -562,9 +562,63 @@ do
   }
 
   -- Load the colorscheme here.
-  -- Like many other themes, this one has different styles, and you could load
-  -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  vim.cmd.colorscheme 'tokyonight-night'
+  --
+  -- The variant (dark/light) follows the system-wide dark/light preference from
+  -- `gsettings get org.gnome.desktop.interface color-scheme` (the dconf setting
+  -- your desktop's theme toggle writes), and a `gsettings monitor` process keeps
+  -- it in sync when that setting changes mid-session.
+  --
+  -- Like many other themes, tokyonight has different styles, and you could load
+  -- any other, such as 'tokyonight-storm' or 'tokyonight-moon' for dark.
+  local SYSTEM_SCHEME_SETTINGS_NS = 'org.gnome.desktop.interface'
+  local SYSTEM_SCHEME_SETTINGS_KEY = 'color-scheme'
+
+  --- Is the system currently configured for a dark interface?
+  --- Anything other than 'prefer-dark' ('default', 'prefer-light', or gsettings
+  --- being unavailable) falls back to light, matching GTK's own behavior.
+  ---@return boolean
+  local function system_prefers_dark()
+    local ok, out = pcall(function() return vim.system({ 'gsettings', 'get', SYSTEM_SCHEME_SETTINGS_NS, SYSTEM_SCHEME_SETTINGS_KEY }):wait().stdout or '' end)
+    return ok and out:find "'prefer%-dark'" ~= nil
+  end
+
+  ---@type boolean
+  local current_dark = system_prefers_dark()
+
+  local dark_scheme = 'tokyonight-night'
+  local light_scheme = 'tokyonight-day'
+
+  local function apply_scheme(dark)
+    if vim.g.colors_name ~= (dark and dark_scheme or light_scheme) then vim.cmd.colorscheme(dark and dark_scheme or light_scheme) end
+  end
+
+  apply_scheme(current_dark)
+
+  -- Follow live system-wide theme changes.
+  do
+    local monitor = vim.system({ 'gsettings', 'monitor', SYSTEM_SCHEME_SETTINGS_NS, SYSTEM_SCHEME_SETTINGS_KEY }, {
+      -- Neovim 0.12: the stdout option doubles as the stream callback, which
+      -- receives `(err, data)` string chunks (data is nil at EOF).
+      stdout = function(_, data)
+        if data == nil then return end
+        -- Monitor writes e.g. `color-scheme: 'prefer-dark'` on every change.
+        local value = data:match "^color%-scheme:%s*'([%w%-]+)'"
+        if value == nil then return end
+
+        vim.schedule(function()
+          local dark = value == 'prefer-dark'
+          if dark == current_dark then return end
+          current_dark = dark
+          apply_scheme(dark)
+        end)
+      end,
+    })
+
+    vim.api.nvim_create_autocmd('VimLeavePre', {
+      group = vim.api.nvim_create_augroup('custom-system-scheme-watcher', { clear = true }),
+      callback = function() monitor:kill() end,
+    })
+  end
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
