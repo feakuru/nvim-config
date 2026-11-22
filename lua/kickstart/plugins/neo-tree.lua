@@ -35,6 +35,8 @@ require('neo-tree').setup {
     -- With this off the binding is one-way-off entirely: neo-tree's root is its own business.
     bind_to_cwd = false,
     cwd_target = { sidebar = 'none', current = 'none' },
+    -- Show dotfiles and gitignored files by default (`H`/`I` toggle them at runtime).
+    filtered_items = { hide_dotfiles = false, hide_gitignored = false },
     window = {
       mappings = {
         ['\\'] = 'close_window',
@@ -42,6 +44,24 @@ require('neo-tree').setup {
         -- `a` creates inside the focused directory, `A` creates a directory there.
         -- `<C-a>` creates alongside the focused node instead.
         ['<C-a>'] = add_sibling,
+
+        -- Neo-tree's built-in `H` only flips `filtered_items.visible`, which is a no-op when
+        -- dotfiles start out visible (`hide_dotfiles = false`). Toggle the flag itself instead.
+        ['H'] = {
+          command = function(state)
+            state.filtered_items.hide_dotfiles = not state.filtered_items.hide_dotfiles
+            require('neo-tree.sources.filesystem.commands').refresh(state)
+          end,
+          desc = 'toggle dotfiles',
+        },
+
+        ['I'] = {
+          command = function(state)
+            state.filtered_items.hide_gitignored = not state.filtered_items.hide_gitignored
+            require('neo-tree.sources.filesystem.commands').refresh(state)
+          end,
+          desc = 'toggle gitignored files',
+        },
 
         ['Y'] = function(state)
           local node = state.tree:get_node()
